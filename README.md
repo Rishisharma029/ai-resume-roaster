@@ -3,7 +3,7 @@
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&labelColor=07070a&logo=react" alt="react" />
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&labelColor=07070a&logo=vite" alt="vite" />
   <img src="https://img.shields.io/badge/License-Educational%20Only-f59e0b?style=for-the-badge&labelColor=07070a" alt="license" />
-  <img src="https://img.shields.io/badge/Status-Live-39ff14?style=for-the-badge&labelColor=07070a&logo=vercel" alt="status" />
+  <img src="https://img.shields.io/badge/Status-Live-39ff14?style=for-the-badge&labelColor=07070a&logo=github" alt="status" />
 </p>
 
 <h1 align="center">🔥 AI Resume Roaster</h1>
@@ -14,12 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="https://ai-resume-roaster.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/🚀%20LIVE%20DEMO-ai--resume--roaster.vercel.app-ff0055?style=for-the-badge&labelColor=07070a" alt="Live Demo" />
-  </a>
-  &nbsp;
   <a href="https://github.com/Rishisharma029/ai-resume-roaster" target="_blank">
-    <img src="https://img.shields.io/badge/📦%20GitHub-Rishisharma029-white?style=for-the-badge&labelColor=07070a&logo=github" alt="GitHub" />
+    <img src="https://img.shields.io/badge/🚀%20VIEW%20ON%20GITHUB-Rishisharma029%2Fai--resume--roaster-ff0055?style=for-the-badge&labelColor=07070a&logo=github" alt="GitHub Demo" />
   </a>
 </p>
 
@@ -37,11 +33,11 @@ The roast is **statistically unique every time**. Fragment-based sentence assemb
 
 ---
 
-## 🚀 Live Demo
+## 🚀 GitHub Repository
 
-> **[https://ai-resume-roaster.vercel.app](https://ai-resume-roaster.vercel.app)**
+> **[https://github.com/Rishisharma029/ai-resume-roaster](https://github.com/Rishisharma029/ai-resume-roaster)**
 
-Try these sample presets available inside the app:
+Try these sample presets available inside the app after cloning:
 - `Tutorial Survivor` — the React clone king
 - `Fake AI Engineer` — the prompt wrapper calling himself ML Architect
 - `LinkedIn Influencer` — pure buzzword energy, zero code
@@ -316,5 +312,5 @@ Regrets:                                  ░░░░░░░░░░░░�
   <strong>Built with ☕ caffeine · 🌙 sleepless nights · 💀 resentment · and a deep, genuine love for honest feedback</strong>
   <br/><br/>
   <a href="https://github.com/Rishisharma029/ai-resume-roaster">⭐ Star on GitHub</a> · 
-  <a href="https://ai-resume-roaster.vercel.app">🚀 Try the Demo</a>
+  <a href="https://github.com/Rishisharma029/ai-resume-roaster">📦 View the Repo</a>
 </p>
