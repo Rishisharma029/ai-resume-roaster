@@ -1257,11 +1257,115 @@ export function analyzeResume(resumeText, personality) {
   const textSeed = cyrb53(resumeText);
   const rand = createRandom(textSeed);
   const candidateName = extractName(resumeText);
+  const wordCount = resumeText.trim().split(/\s+/).length || 1;
+
+  // ─── Easter Eggs Overrides ─────────────────────────────────
+  const lowerText = text.toLowerCase();
+  if (lowerText.includes('rishi sharma') || lowerText.includes('rishisharma029') || candidateName.toLowerCase() === 'rishi') {
+    return {
+      score: 100,
+      seed: textSeed,
+      roastId: "IMMUNE01",
+      candidateName: "Rishi Sharma",
+      verdictTitle: "DEVELOPER IMMUNITY DETECTED",
+      verdictBody: "Wait... the parser hit a secure index. Deployer override signature found. You spent weeks optimizing CSS margins at 3 AM, debugging procedural Web Audio waves, and designing visual imperfections. Our systems cannot roast the hands that built us. Your resume is completely immune to emotional damage. Go drink some water and get some actual sleep.",
+      verdictFinalBlow: "Developer immunity active. Star the repo or git out.",
+      redFlagsCount: 0,
+      buzzwordsCount: 0,
+      careerLore: "A sleep-deprived indie hacker who obsessed over margins, fonts, scanlines, and audio synthesis between midnight and 4 AM.",
+      recoveryProtocols: [
+        "Go outside and look at actual green trees. Yes, they exist.",
+        "Your contribution graph is green enough. Rest for 24 hours.",
+        "Drink a glass of water instead of another cup of coffee."
+      ],
+      achievements: [
+        { title: "CREATOR OF CHADS", desc: "Immunity unlocked. You built this database of pain." },
+        { title: "3AM CODING VETERAN", desc: "Survived dependency conflicts and state transitions." }
+      ],
+      battleItems: [
+        { original: "Wrote all code singlehandedly", improved: "Commanded a legion of 8 distinct fictional AI executioners to roast applicant egos", reason: "Infrastructure superiority" }
+      ],
+      sweatinessLevel: 0,
+      tryHardVibe: "THE CHAD CREATOR",
+      archetype: { badge: "👑 THE CREATOR", desc: "The sleep-deprived engineer who built this app. Completely immune to roasts.", color: "#39ff14" },
+      sweatIndex: 0,
+      linkedinDelusion: "NONE",
+      tutorialDependency: 0,
+      productionExposure: 100,
+      founderHallucination: "NONE",
+      sweatIndexJustification: "Creator is perfectly balanced.",
+      linkedinDelusionJustification: "Zero corporate fluff found.",
+      tutorialDependencyJustification: "This is a custom built original codebase.",
+      productionExposureJustification: "Live on GitHub Pages with active branch commits.",
+      founderHallucinationJustification: "Actually shipped the product.",
+      contradictions: [],
+      detectedAngles: [],
+      foundSkills: ["React", "Web Audio API", "CSS Grid", "Determined Seed RNG"],
+      foundTutorials: [],
+      metrics: {
+        buzzwordDensity: 0,
+        tutorialDependency: 0,
+        hasGitHub: true,
+        hasLiveLink: true,
+        wordCount: wordCount
+      }
+    };
+  }
+
+  if (lowerText.includes('antigravity')) {
+    return {
+      score: 42,
+      seed: textSeed,
+      roastId: "ANTIGRAV",
+      candidateName: candidateName || "Antigravity Agent",
+      verdictTitle: "WARNING: ANOMALOUS MASS DETECTED",
+      verdictBody: "You uploaded a resume mentioning 'antigravity'. The parser is currently floating above the computer desk. Gravity check has returned negative. We cannot evaluate your performance metrics because your skills are currently drifting out of the browser window. If you feel lightheaded, please hold on to your keyboard.",
+      verdictFinalBlow: "import antigravity; // Floating away in 3, 2, 1...",
+      redFlagsCount: 0,
+      buzzwordsCount: 0,
+      careerLore: "A developer who refuses to be bound by standard physical laws (or local gravity parameters).",
+      recoveryProtocols: [
+        "Read xkcd.com/353/ immediately to compile flight patterns.",
+        "Tie yourself to a heavy desk chair before running npm run dev next time.",
+        "Watch out for ceiling fans."
+      ],
+      achievements: [
+        { title: "ZERO GRAVITY", desc: "Uploaded the secret keyword. Physical laws bypassed." },
+        { title: "XKCD AFICIONADO", desc: "Imported antigravity successfully." }
+      ],
+      battleItems: [
+        { original: "Experienced backend engineer", improved: "Disrupted the gravitational pull of local server racks to reduce ping latency", reason: "Breaks physical constraints" }
+      ],
+      sweatinessLevel: 42,
+      tryHardVibe: "FLOATING AWAY",
+      archetype: { badge: "🎈 SPACE EVANGELIST", desc: "A developer who is currently floating away from their workspace.", color: "#38bdf8" },
+      sweatIndex: 42,
+      linkedinDelusion: "MILD",
+      tutorialDependency: 0,
+      productionExposure: 50,
+      founderHallucination: "NONE",
+      sweatIndexJustification: "Gravity-defying parameters detected.",
+      linkedinDelusionJustification: "Low delusion, high levitation.",
+      tutorialDependencyJustification: "Standard tutorials assume gravity is present.",
+      productionExposureJustification: "Hard to push to main when your keyboard is floating.",
+      founderHallucinationJustification: "No startup claims, just floating.",
+      contradictions: [],
+      detectedAngles: [],
+      foundSkills: ["Gravitational Disruption", "xkcd python packages"],
+      foundTutorials: [],
+      metrics: {
+        buzzwordDensity: 0,
+        tutorialDependency: 0,
+        hasGitHub: true,
+        hasLiveLink: true,
+        wordCount: wordCount
+      }
+    };
+  }
 
   // Heuristics
   let buzzwordCount = 0;
   BUZZWORDS.forEach(word => { buzzwordCount += (text.split(word).length - 1); });
-  const wordCount = resumeText.trim().split(/\s+/).length || 1;
   const buzzwordDensity = Math.min((buzzwordCount / wordCount) * 100, 30);
 
   let tutorialCount = 0;

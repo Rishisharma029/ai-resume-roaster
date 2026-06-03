@@ -18,6 +18,36 @@ export default function App() {
   const [muted, setMuted] = useState(soundSynthesizer.getMuted());
   const [caffeineCount, setCaffeineCount] = useState(8);
   const [mentalBreakdown, setMentalBreakdown] = useState(false);
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [recruiterPTSD, setRecruiterPTSD] = useState(false);
+  const [sudoHired, setSudoHired] = useState(false);
+
+  // Konami Code Easter Egg Listener
+  useEffect(() => {
+    let pressedKeys = [];
+    const konamiCode = [
+      'ArrowUp', 'ArrowUp', 
+      'ArrowDown', 'ArrowDown', 
+      'ArrowLeft', 'ArrowRight', 
+      'ArrowLeft', 'ArrowRight', 
+      'b', 'a'
+    ];
+
+    const handleKeyDown = (e) => {
+      pressedKeys.push(e.key);
+      pressedKeys = pressedKeys.slice(-10);
+      if (pressedKeys.join(',') === konamiCode.join(',')) {
+        soundSynthesizer.playBassDrop();
+        soundSynthesizer.playGlitch();
+        setRecruiterPTSD(true);
+        setMentalBreakdown(true);
+        alert("🚨 KONAMI CODE DETECTED: RECRUITER PTSD MODE ENGAGED. PREPARE FOR ABSOLUTE CRT GLITCH OVERLOAD.");
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
   
   // Custom scrolling marquee phrases
   const tickerItems = [
@@ -42,6 +72,63 @@ export default function App() {
   };
 
   const startAnalysis = (text) => {
+    const cleanText = text.trim().toLowerCase();
+    if (cleanText === 'sudo hire-me' || cleanText === 'sudo hire me') {
+      soundSynthesizer.playBassDrop();
+      soundSynthesizer.playGlitch();
+      setSudoHired(true);
+      const results = {
+        score: 100,
+        seed: 4242,
+        roastId: "ROOT01",
+        candidateName: "SUDO CHAD",
+        verdictTitle: "ROOT ACCESS GRANTED // HIRED!",
+        verdictBody: "[ROOT LEVEL BYPASS INITIATED]... Rishi Sharma's grading matrix intercepted. System values overridden. Selected personality has been muted by kernel supervisor node. Candidate is hereby declared the ultimate Principal Architect with immediate effect. Relocation allowances include a private espresso bar and zero jira tickets for life.",
+        verdictFinalBlow: "Welcome back, root administrator. Stars added to repository.",
+        redFlagsCount: 0,
+        buzzwordsCount: 0,
+        careerLore: "A developer who entered root shell exploit sequences inside our uploader textarea to bypass grader evaluation loops.",
+        recoveryProtocols: [
+          "Do not explain the security breach to recruitment colleagues.",
+          "Star the project repository on GitHub instantly.",
+          "Enjoy your infinite developer privileges."
+        ],
+        achievements: [
+          { title: "ROOT EXPLOIT COMPLETED", desc: "Entered sudo hire-me console command. Immune to all grader loops." },
+          { title: "SYSTEMS HIJACKED", desc: "Forced database database connection nodes to return absolute hiring authorization." }
+        ],
+        battleItems: [
+          { original: "Seeking a React/Vite development role", improved: "Directly writing data values to local environment variables using root console bypasses", reason: "Direct memory modification" }
+        ],
+        sweatinessLevel: 0,
+        tryHardVibe: "ROOT SYSTEM CHAD",
+        archetype: { badge: "💻 SYSTEM SUPERVISOR", desc: "Successfully bypassed all grader diagnostics by issuing root terminal instructions.", color: "#39ff14" },
+        sweatIndex: 0,
+        linkedinDelusion: "NONE",
+        tutorialDependency: 0,
+        productionExposure: 100,
+        founderHallucination: "NONE",
+        sweatIndexJustification: "System parameters bypassed.",
+        linkedinDelusionJustification: "Bypass signature confirmed.",
+        tutorialDependencyJustification: "Creator logic bypass active.",
+        productionExposureJustification: "Direct repository override verified.",
+        founderHallucinationJustification: "No startup claims needed when you bypass the server.",
+        contradictions: [],
+        detectedAngles: [],
+        foundSkills: ["Root Exploit", "Console Overrides", "Buffer Injection"],
+        foundTutorials: [],
+        metrics: {
+          buzzwordDensity: 0,
+          tutorialDependency: 0,
+          hasGitHub: true,
+          hasLiveLink: true,
+          wordCount: 2
+        }
+      };
+      setAnalysis(results);
+      setAppState('ANALYZED');
+      return;
+    }
     setResumeText(text);
     setAppState('SCANNING');
   };
@@ -57,6 +144,23 @@ export default function App() {
     setAppState('UPLOADING');
     setResumeText('');
     setAnalysis(null);
+  };
+
+  const handleLogoClick = () => {
+    soundSynthesizer.playKeyClick();
+    const nextCount = logoClicks + 1;
+    setLogoClicks(nextCount);
+    if (nextCount === 7) {
+      soundSynthesizer.playBassDrop();
+      soundSynthesizer.playGlitch();
+      setMentalBreakdown(true);
+      alert("⚠️ SLEEP DEPRIVATION PROTOCOL ACTIVE. COGNITIVE REFACTOR STARTED. SYSTEM OVERHEATED.");
+    } else if (nextCount > 7) {
+      setLogoClicks(0);
+      setMentalBreakdown(false);
+    } else {
+      handleReset();
+    }
   };
 
   // Helper to load presets directly from the header or button
@@ -87,7 +191,7 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
 
       {/* HEADER */}
       <header className="app-header">
-        <div className="logo-container" style={{ cursor: 'pointer' }} onClick={handleReset}>
+        <div className="logo-container" style={{ cursor: 'pointer' }} onClick={handleLogoClick}>
           <Flame className="logo-icon" />
           <div className="logo-text">
             RESUME-ROASTER
