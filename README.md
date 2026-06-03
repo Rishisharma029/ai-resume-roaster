@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="readme_banner.png" alt="AI Resume Roaster Banner" width="100%" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/RESUME%20ROASTER-v2.0-ff0055?style=for-the-badge&labelColor=07070a&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmMDA1NSIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyUzYuNDggMjIgMTIgMjIgMjIgMTcuNTIgMjIgMTIgMTcuNTIgMiAxMiAyem0wIDIwYy00LjQyIDAtOC0zLjU4LTgtOHMzLjU4LTggOC04IDggMy41OCA4IDgtMy41OCA4LTggOHoiLz48L3N2Zz4=" alt="version" />
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&labelColor=07070a&logo=react" alt="react" />
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&labelColor=07070a&logo=vite" alt="vite" />
@@ -39,7 +43,7 @@ The roast is **statistically unique every time**. Fragment-based sentence assemb
 
 ## 🚀 Live Demo
 
-> **[https://rishisharma029.github.io/ai-resume-roaster/](https://rishisharma029.github.io/ai-resume-roaster/)**
+> ### 🔗 **[https://rishisharma029.github.io/ai-resume-roaster/](https://rishisharma029.github.io/ai-resume-roaster/)**
 
 Try these sample presets available inside the app:
 - `Tutorial Survivor` — the React clone king
@@ -54,14 +58,14 @@ Try these sample presets available inside the app:
 
 | Persona | Specialty | Theme |
 |:---|:---|:---|
-| 🔴 **Staff Engineer** | Ego inflation, production gaps, false seniority | Neon Red · Glitch · CRT |
-| 🔵 **Exhausted Recruiter** | Buzzword saturation, ATS padding, copy-paste CVs | Corporate Blue · Subtle Glitches |
-| 🟠 **Startup CTO** | Localhost prisoners, fake founders, empty repos | Vaporwave Orange · Hype Gradient |
-| 🟡 **FAANG Gatekeeper** | Algorithmic incompetence, false confidence | Gold · Terminal Green · Brutalist |
-| 🟢 **DevOps Veteran** | Deployment avoidance, infrastructure cosplay | Alert Red · Prometheus Critical |
-| 🟣 **Rust Elitist** | Memory safety heresy, GC addiction, malloc shame | Purple · Type Safety Shield |
-| 🩵 **OSS Maintainer** | Drive-by PR closers, dependency abusers | Teal · Git Blame Critique |
-| ⚪ **Systems Architect** | Distributed deadlocks, N+1 architecture, theory crafters | Steel Gray · Windows 95 Error |
+| 🔴 **Staff Engineer** | Ego inflation, production gaps, false seniority | <code>Neon Red</code> · <code>Glitch</code> · <code>CRT</code> |
+| 🔵 **Exhausted Recruiter** | Buzzword saturation, ATS padding, copy-paste CVs | <code>Corporate Blue</code> · <code>Subtle Glitches</code> |
+| 🟠 **Startup CTO** | Localhost prisoners, fake founders, empty repos | <code>Vaporwave Orange</code> · <code>Hype Gradient</code> |
+| 🟡 **FAANG Gatekeeper** | Algorithmic incompetence, false confidence | <code>Gold</code> · <code>Terminal Green</code> · <code>Brutalist</code> |
+| 🟢 **DevOps Veteran** | Deployment avoidance, infrastructure cosplay | <code>Alert Red</code> · <code>Prometheus Critical</code> |
+| 🟣 **Rust Elitist** | Memory safety heresy, GC addiction, malloc shame | <code>Purple</code> · <code>Type Safety Shield</code> |
+| 🩵 **OSS Maintainer** | Drive-by PR closers, dependency abusers | <code>Teal</code> · <code>Git Blame Critique</code> |
+| ⚪ **Systems Architect** | Distributed deadlocks, N+1 architecture, theory crafters | <code>Steel Gray</code> · <code>Windows 95 Error</code> |
 
 ---
 
@@ -69,16 +73,16 @@ Try these sample presets available inside the app:
 
 - **🔥 Pure paragraph roast** — no headers, no log wrappers, one continuous brutal monologue
 - **🎲 Fragment-based uniqueness** — 15+ sentence pools × 4 sections × 8 personas = millions of combinations
-- **🔍 Contradiction analysis** — detects "Senior Architect" + beginner portfolio → ego inflation
+- **🔍 Contradiction analysis** — detects <code>"Senior Architect"</code> + beginner portfolio → ego inflation
 - **📊 Sweat Diagnostics** — Tutorial Dependency %, Production Exposure %, LinkedIn Delusion Rating
-- **🏷️ Career Archetype** — classified into 10+ resume archetypes (Tutorial Survivor, API Wrapper Cosplayer, etc.)
+- **🏷️ Career Archetype** — classified into 10+ resume archetypes (<code>Tutorial Survivor</code>, <code>API Wrapper Cosplayer</code>, etc.)
 - **⚔️ Battle Mode Rewrites** — transforms your weak bullet points into what they should have said
 - **💊 Recovery Protocol** — actual actionable steps to stop being a resume fraud
 - **🃏 Survivor Card** — downloadable PNG memento of your public humiliation
 - **📋 Copy Roast** — one-click clipboard copy of the full roast
 - **🔊 Sound Design** — procedural mechanical keyboard + bass drop audio feedback
 - **🎨 Theme Engine** — each persona has its own complete color theme, particle system, and glow palette
-- **🧠 Persistent memory** — localStorage tracks used phrases so you never see the same sentence twice
+- **🧠 Persistent memory** — <code>localStorage</code> tracks used phrases so you never see the same sentence twice
 
 ---
 
@@ -94,16 +98,16 @@ HTML                  █░░░░░░░░░░░░░░░░░░�
 
 | Layer | Technology | Purpose |
 |:---|:---|:---|
-| **UI Framework** | React 18 | Component architecture, state machine |
-| **Build Tool** | Vite 8 | HMR, fast bundling |
-| **Animation** | Framer Motion | Page transitions, micro-animations |
-| **Icons** | Lucide React | UI iconography |
-| **Canvas Export** | html2canvas | Survivor card PNG download |
-| **Audio** | Web Audio API | Procedural sound synthesis (no audio files) |
-| **Persistence** | localStorage | Roast phrase deduplication history |
-| **Styling** | Vanilla CSS | Glassmorphism, CRT scanlines, neon glows |
-| **Fonts** | Google Fonts | JetBrains Mono, Outfit, Fira Code |
-| **RNG** | Custom cyrb53 PRNG | Seeded deterministic roast generation |
+| **UI Framework** | <kbd>React 18</kbd> | Component architecture, state machine |
+| **Build Tool** | <kbd>Vite 8</kbd> | HMR, fast bundling |
+| **Animation** | <kbd>Framer Motion</kbd> | Page transitions, micro-animations |
+| **Icons** | <kbd>Lucide React</kbd> | UI iconography |
+| **Canvas Export** | <kbd>html2canvas</kbd> | Survivor card PNG download |
+| **Audio** | <kbd>Web Audio API</kbd> | Procedural sound synthesis (no audio files) |
+| **Persistence** | <kbd>localStorage</kbd> | Roast phrase deduplication history |
+| **Styling** | <kbd>Vanilla CSS</kbd> | Glassmorphism, CRT scanlines, neon glows |
+| **Fonts** | <kbd>Google Fonts</kbd> | JetBrains Mono, Outfit, Fira Code |
+| **RNG** | <kbd>Custom cyrb53 PRNG</kbd> | Seeded deterministic roast generation |
 
 ---
 
