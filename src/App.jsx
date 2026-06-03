@@ -22,6 +22,110 @@ export default function App() {
   const [recruiterPTSD, setRecruiterPTSD] = useState(false);
   const [sudoHired, setSudoHired] = useState(false);
 
+  // New chaos/easter egg states (z2l9aa)
+  const [ramUsage, setRamUsage] = useState(256.4);
+  const [showDebugConsole, setShowDebugConsole] = useState(false);
+  const [showClippy, setShowClippy] = useState(false);
+  const [grassHovers, setGrassHovers] = useState(0);
+  const [dvdPos, setDvdPos] = useState({ x: 50, y: 150 });
+  const [dvdDir, setDvdDir] = useState({ x: 3, y: 3 });
+  const [auraAchievement, setAuraAchievement] = useState(false);
+  const [bsodState, setBsodState] = useState(false); // false, 'FATAL', 'JK'
+  
+  // Custom easter egg states (z2l9aa)
+  const [consoleInput, setConsoleInput] = useState('');
+  const [consoleLines, setConsoleLines] = useState([
+    'resume_score = 12',
+    'ego_level = catastrophic',
+    'tutorial_dependency = true'
+  ]);
+  const [timeOnSite, setTimeOnSite] = useState(0);
+  const [burnoutScore, setBurnoutScore] = useState(0);
+  const [showBurnoutUnlock, setShowBurnoutUnlock] = useState(false);
+  const [clippyStep, setClippyStep] = useState(0);
+  const [is314AM, setIs314AM] = useState(false);
+  const [recruiterTyping, setRecruiterTyping] = useState(false);
+
+  // Track time on site & handle 3:14 AM check (Rule 2 & Rule 4)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeOnSite(prev => prev + 1);
+    }, 1000);
+
+    const checkTime = () => {
+      const now = new Date();
+      if (now.getHours() === 3 && now.getMinutes() === 14) {
+        setIs314AM(true);
+      } else {
+        setIs314AM(false);
+      }
+    };
+    checkTime();
+    const timeCheckInterval = setInterval(checkTime, 10000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(timeCheckInterval);
+    };
+  }, []);
+
+  // 4. Play background sounds when 3:14 AM event is active
+  useEffect(() => {
+    if (is314AM) {
+      soundSynthesizer.playKeyboardSpam();
+      
+      const t1 = setTimeout(() => {
+        soundSynthesizer.playDiscordPing();
+      }, 2500);
+
+      const t2 = setTimeout(() => {
+        soundSynthesizer.playDeepSigh();
+      }, 5500);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [is314AM]);
+
+  // 13. Recruiter typing inactivity monitor
+  useEffect(() => {
+    let timeout;
+    const resetActivityTimer = () => {
+      setRecruiterTyping(false);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setRecruiterTyping(true);
+      }, 12000);
+    };
+
+    window.addEventListener('mousemove', resetActivityTimer);
+    window.addEventListener('keydown', resetActivityTimer);
+    window.addEventListener('click', resetActivityTimer);
+    
+    resetActivityTimer();
+    
+    return () => {
+      window.removeEventListener('mousemove', resetActivityTimer);
+      window.removeEventListener('keydown', resetActivityTimer);
+      window.removeEventListener('click', resetActivityTimer);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // 5. Burnout score threshold listener
+  useEffect(() => {
+    if (burnoutScore >= 12 && !showBurnoutUnlock) {
+      soundSynthesizer.playUnlock();
+      setShowBurnoutUnlock(true);
+      const timer = setTimeout(() => {
+        setShowBurnoutUnlock(false);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [burnoutScore, showBurnoutUnlock]);
+
   // Konami Code Easter Egg Listener
   useEffect(() => {
     let pressedKeys = [];
@@ -36,18 +140,85 @@ export default function App() {
     const handleKeyDown = (e) => {
       pressedKeys.push(e.key);
       pressedKeys = pressedKeys.slice(-10);
+      
+      // Ctrl+Shift+~ logic (Rule 3)
+      if (e.ctrlKey && e.shiftKey && e.key === '~') {
+        setShowDebugConsole(prev => !prev);
+        soundSynthesizer.playKeyClick();
+        setBurnoutScore(s => s + 2);
+      }
+
       if (pressedKeys.join(',') === konamiCode.join(',')) {
         soundSynthesizer.playBassDrop();
         soundSynthesizer.playGlitch();
         setRecruiterPTSD(true);
         setMentalBreakdown(true);
+        setBurnoutScore(s => s + 5);
         alert("🚨 KONAMI CODE DETECTED: RECRUITER PTSD MODE ENGAGED. PREPARE FOR ABSOLUTE CRT GLITCH OVERLOAD.");
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [burnoutScore]);
+
+  // Fake Memory Leak counter (Rule 2)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRamUsage(prev => +(prev + Math.random() * 0.15).toFixed(2));
+    }, 1500);
+    return () => clearInterval(timer);
   }, []);
+
+  // Clippy Trigger after 25s (Rule 8)
+  useEffect(() => {
+    const clippyTimer = setTimeout(() => {
+      setShowClippy(true);
+    }, 25000);
+    return () => clearTimeout(clippyTimer);
+  }, []);
+
+  // DVD Logo Bouncing Loop (Rule 7)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDvdPos(prev => {
+        let nextX = prev.x + dvdDir.x;
+        let nextY = prev.y + dvdDir.y;
+        let changeDirX = false;
+        let changeDirY = false;
+
+        const containerWidth = window.innerWidth;
+        const containerHeight = window.innerHeight;
+
+        if (nextX <= 0 || nextX >= containerWidth - 60) {
+          changeDirX = true;
+          nextX = nextX <= 0 ? 0 : containerWidth - 60;
+        }
+        if (nextY <= 0 || nextY >= containerHeight - 20) {
+          changeDirY = true;
+          nextY = nextY <= 0 ? 0 : containerHeight - 20;
+        }
+
+        if (changeDirX && changeDirY && !auraAchievement) {
+          setAuraAchievement(true);
+          soundSynthesizer.playBassDrop();
+          soundSynthesizer.playGlitch();
+          alert("🏆 LEGENDARY ALIGNMENT ACHIEVED! DVD Logo hit the corner perfectly. +100 aura.");
+        }
+
+        if (changeDirX || changeDirY) {
+          setDvdDir(d => ({
+            x: changeDirX ? -d.x : d.x,
+            y: changeDirY ? -d.y : d.y
+          }));
+        }
+
+        return { x: nextX, y: nextY };
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [dvdDir, auraAchievement]);
   
   // Custom scrolling marquee phrases
   const tickerItems = [
@@ -73,6 +244,33 @@ export default function App() {
 
   const startAnalysis = (text) => {
     const cleanText = text.trim().toLowerCase();
+    setBurnoutScore(s => s + 3);
+
+    // 1. rm -rf recruiter exploit (Hacker Easter Egg 1)
+    if (cleanText === 'rm -rf recruiter' || cleanText === 'rm -rf /' || cleanText === 'rm -rf') {
+      soundSynthesizer.playBassDrop();
+      soundSynthesizer.playGlitch();
+      setAppState('RECRUITER_DELETED');
+      return;
+    }
+
+    // 2. Fake Blue Screen Crash (Old Internet Energy 9)
+    if (Math.random() < 0.015 || cleanText.includes('bsod') || cleanText.includes('blue screen')) {
+      soundSynthesizer.playBassDrop();
+      soundSynthesizer.playGlitch();
+      setBsodState('FATAL');
+      setTimeout(() => {
+        setBsodState('JK');
+        setTimeout(() => {
+          setBsodState(false);
+          setResumeText(text);
+          setAppState('SCANNING');
+        }, 1500);
+      }, 3000);
+      return;
+    }
+
+    // 3. sudo hire-me exploit
     if (cleanText === 'sudo hire-me' || cleanText === 'sudo hire me') {
       soundSynthesizer.playBassDrop();
       soundSynthesizer.playGlitch();
@@ -144,10 +342,12 @@ export default function App() {
     setAppState('UPLOADING');
     setResumeText('');
     setAnalysis(null);
+    setBurnoutScore(s => s + 2);
   };
 
   const handleLogoClick = () => {
     soundSynthesizer.playKeyClick();
+    setBurnoutScore(s => s + 1);
     const nextCount = logoClicks + 1;
     setLogoClicks(nextCount);
     if (nextCount === 7) {
@@ -163,25 +363,54 @@ export default function App() {
     }
   };
 
+  const handleConsoleSubmit = (e) => {
+    if (e.key === 'Enter') {
+      const cmd = consoleInput.trim();
+      if (!cmd) return;
+      
+      soundSynthesizer.playKeyClick();
+      setConsoleLines(prev => [...prev, `> ${cmd}`]);
+      setConsoleInput('');
+      
+      setTimeout(() => {
+        if (cmd === 'override_hiring_decision()') {
+          soundSynthesizer.playGlitch();
+          setConsoleLines(prev => [...prev, 'ACCESS DENIED']);
+        } else if (cmd === 'help') {
+          setConsoleLines(prev => [...prev, 'Available commands: help, clear, override_hiring_decision(), sudo hire-me']);
+        } else if (cmd === 'clear') {
+          setConsoleLines([]);
+        } else if (cmd === 'sudo hire-me') {
+          soundSynthesizer.playUnlock();
+          setConsoleLines(prev => [...prev, 'SUCCESS: Sudo authorization granted. Igniting uploader...']);
+          setTimeout(() => {
+            setShowDebugConsole(false);
+            startAnalysis('sudo hire-me');
+          }, 1500);
+        } else {
+          setConsoleLines(prev => [...prev, `Unknown command: ${cmd}`]);
+        }
+      }, 400);
+    }
+  };
+
+  const handleClippyOption = (option) => {
+    soundSynthesizer.playKeyClick();
+    setClippyStep(1);
+    setBurnoutScore(s => s + 2);
+    setTimeout(() => {
+      setShowClippy(false);
+      setClippyStep(0);
+    }, 3000);
+  };
+
   // Helper to load presets directly from the header or button
   const handleLoadSampleResume = () => {
     soundSynthesizer.playKeyClick();
-    // Default preset strings
-    const sample = `Resume preset from senior tutorial developer:
-Todo List App: Created dynamic lists in HTML.
-Weather App: Fetched basic APIs.
-Calculator App: Coded mathematical outputs.
-Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
-    
-    // We will search for uploader element value or set state if needed.
-    // To make it easy, we trigger this on the textarea input in Uploader.
-    // So we communicate via custom event or uploader hooks. In this build,
-    // the Uploader component already handles loading sample presets!
-    // We will let the Uploader do it or trigger a global prompt change.
   };
 
   return (
-    <div className={`app-wrapper ${selectedPersonality.themeClass} ${mentalBreakdown ? 'mental-breakdown-active' : ''}`}>
+    <div className={`app-wrapper ${selectedPersonality.themeClass} ${mentalBreakdown || is314AM ? 'mental-breakdown-active sanity-overflow-mode' : ''} ${analysis?.isGenuinelyGood ? 'genuinely-good-active' : ''}`}>
       <div className="cyber-grid" />
       <div className="scanlines-overlay" />
       <div className="noise-grain-overlay" />
@@ -377,6 +606,41 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
                 onAnalyze={startAnalysis}
               />
             </section>
+
+            {/* GITHUB CONTRIBUTION RITUAL GRID (Rule 6) */}
+            <div className="grass-grid-container">
+              <div className="grass-header">
+                <span className="grass-title">⚡ LOCALHOST CONTRIBUTION RITUAL</span>
+                <span className={`grass-status ${grassHovers >= 10 ? 'grass-touched-true' : 'grass-touched-false'}`}>
+                  {grassHovers >= 10 ? '🏆 PHOTOSYNTHESIS ENGINEER' : 'grass touched: false'}
+                </span>
+              </div>
+              <div className="grass-grid">
+                {Array.from({ length: 28 }).map((_, i) => {
+                  const greenShades = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'];
+                  const shade = greenShades[(i * 7 + 3) % greenShades.length];
+                  return (
+                    <div 
+                      key={i} 
+                      className="grass-cell"
+                      style={{ background: shade }}
+                      onMouseEnter={() => {
+                        setGrassHovers(h => {
+                          const next = h + 1;
+                          if (next === 10) {
+                            soundSynthesizer.playUnlock();
+                          } else {
+                            soundSynthesizer.playHover();
+                          }
+                          return next;
+                        });
+                        setBurnoutScore(s => s + 1);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
           </motion.main>
         )}
 
@@ -413,7 +677,301 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
             />
           </motion.div>
         )}
+
+        {appState === 'RECRUITER_DELETED' && (
+          <motion.div
+            key="recruiter_deleted"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ width: '100%' }}
+          >
+            <RecruiterDeletedView onReset={handleReset} />
+          </motion.div>
+        )}
       </AnimatePresence>
+
+      {/* 2. Fake Memory Leak Telemetry Widget (Rule 2) */}
+      <div className="sys-telemetry-widget" style={{
+        position: 'fixed',
+        bottom: '10px',
+        right: '20px',
+        background: 'rgba(0,0,0,0.85)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        fontSize: '0.65rem',
+        fontFamily: 'var(--font-mono)',
+        color: '#71717a',
+        zIndex: 9998,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        pointerEvents: 'none'
+      }}>
+        <div>RAM USAGE: <span style={{ color: timeOnSite >= 300 ? '#ef4444' : 'var(--theme-primary, #39ff14)' }}>{ramUsage} MB</span></div>
+        {timeOnSite >= 300 && (
+          <div style={{ color: '#eab308', animation: 'pulseTyping 1s infinite', textTransform: 'uppercase', marginTop: '4px' }}>
+            ⚠️ WARNING: memory leak detected <br/>
+            possible cause: unresolved childhood ambition
+          </div>
+        )}
+      </div>
+
+      {/* 3. Interactive Debug Console Shell (Rule 3) */}
+      {showDebugConsole && (
+        <div className="debug-console-window">
+          <div className="debug-console-header">
+            <span className="debug-console-title"> Grader Debug Shell </span>
+            <button className="debug-console-close-btn" onClick={() => setShowDebugConsole(false)}>×</button>
+          </div>
+          <div className="debug-console-body">
+            {consoleLines.map((line, idx) => {
+              let lineClass = 'stdout';
+              if (line.startsWith('>')) lineClass = 'stdin';
+              else if (line === 'ACCESS DENIED') lineClass = 'error';
+              return (
+                <div key={idx} className={`debug-line ${lineClass}`}>
+                  {line}
+                </div>
+              );
+            })}
+          </div>
+          <div className="debug-input-container">
+            <span className="debug-prompt">&gt;</span>
+            <input 
+              type="text"
+              value={consoleInput}
+              onChange={(e) => setConsoleInput(e.target.value)}
+              onKeyDown={handleConsoleSubmit}
+              className="debug-input-el"
+              placeholder="override_hiring_decision()..."
+              autoFocus
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 4. 3:14 AM Sanity Overflow Banner (Rule 4) */}
+      {is314AM && (
+        <div style={{
+          background: '#ef4444',
+          color: '#fff',
+          textAlign: 'center',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.7rem',
+          padding: '6px',
+          fontWeight: 'bold',
+          letterSpacing: '2px',
+          zIndex: 99999,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.5)'
+        }}>
+          🚨 SANITY BUFFER OVERFLOW MODE ACTIVE (LOCAL TIME: 3:14 AM) 🚨
+        </div>
+      )}
+
+      {/* 5. Burnout Achievement toast alert (Rule 5) */}
+      {showBurnoutUnlock && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          background: 'rgba(10, 10, 15, 0.95)',
+          border: '1px solid #eab308',
+          boxShadow: '0 0 15px rgba(234, 179, 8, 0.3)',
+          padding: '16px',
+          borderRadius: '6px',
+          zIndex: 10000,
+          maxWidth: '300px',
+          fontFamily: 'var(--font-mono)',
+          color: '#fff'
+        }}>
+          <div style={{ color: '#eab308', fontSize: '0.65rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
+            🏆 ACHIEVEMENT UNLOCKED
+          </div>
+          <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>"Senior Developer, Mentally"</div>
+          <div style={{ fontSize: '0.7rem', color: '#a1a1aa', marginTop: '6px', lineHeight: '1.4' }}>
+            You have triggered multiple system events, compiled boilerplate configurations, and survived structural delays. Go touch some grass.
+          </div>
+        </div>
+      )}
+
+      {/* 7. DVD Bouncing Logo & Aura Banner (Rule 7) */}
+      <div 
+        className="dvd-bouncing-logo"
+        style={{
+          left: `${dvdPos.x}px`,
+          top: `${dvdPos.y}px`,
+          '--dvd-color': auraAchievement ? '#facc15' : 'var(--theme-primary, #ef4444)',
+          '--dvd-color-rgb': auraAchievement ? '250, 204, 21' : 'var(--theme-primary-rgb, 239, 68, 68)'
+        }}
+      >
+        {selectedPersonality.id === 'startup_cto' ? 'EXIT' : 'ROAST'}
+      </div>
+
+      {auraAchievement && (
+        <>
+          <div className="gold-flash-overlay" />
+          <div style={{
+            position: 'fixed',
+            top: '150px',
+            right: '20px',
+            background: 'rgba(250, 204, 21, 0.1)',
+            border: '1px solid #facc15',
+            boxShadow: '0 0 20px rgba(250, 204, 21, 0.4)',
+            padding: '16px',
+            borderRadius: '6px',
+            zIndex: 10000,
+            maxWidth: '300px',
+            fontFamily: 'var(--font-mono)',
+            color: '#fff'
+          }}>
+            <div style={{ color: '#facc15', fontSize: '0.65rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
+              🌟 CORNER ALIGNMENT UNLOCKED
+            </div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>"LEGENDARY ALIGNMENT"</div>
+            <div style={{ fontSize: '0.7rem', color: '#fef08a', marginTop: '6px', lineHeight: '1.4' }}>
+              The logo bounced into the corner. You have earned +100 aura points. Recruiter PTSD rating overridden.
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 8. Clippy retro Microsoft Office Assistant (Rule 8) */}
+      {showClippy && (
+        <div className="clippy-container">
+          <div className="clippy-bubble">
+            {clippyStep === 0 ? (
+              <>
+                It looks like you're trying to fake 5 years of experience. Would you like some help with that?
+                <div className="clippy-options">
+                  <button className="clippy-opt-btn" onClick={() => handleClippyOption('yes')}>
+                    [yes] Yes, bypass validation
+                  </button>
+                  <button className="clippy-opt-btn" onClick={() => handleClippyOption('absolutely')}>
+                    [absolutely] Absolutely, inflate metrics
+                  </button>
+                </div>
+              </>
+            ) : (
+              <span style={{ color: '#047857', fontWeight: 'bold' }}>
+                ✓ Understood. Injecting "Led cross-functional Kubernetes refactoring for 10M+ users" into database logs.
+              </span>
+            )}
+          </div>
+          <div className="clippy-avatar-box" onClick={() => { soundSynthesizer.playHover(); }}>
+            📎
+          </div>
+        </div>
+      )}
+
+      {/* 9. Fake Blue Screen Crash (Rule 9) */}
+      {bsodState && (
+        <div className={`bsod-screen ${bsodState === 'JK' ? 'jk-mode' : ''}`}>
+          {bsodState === 'FATAL' ? (
+            <>
+              <div className="bsod-title-box">Windows</div>
+              <div className="bsod-body">
+                A fatal exception RESUME_PARSER_FATAL_EXCEPTION has occurred at 0028:C0011E36.
+                The current process has been terminated due to extreme developer ego inflation.
+                <br /><br />
+                *  Press any key to continue (or touch grass).<br />
+                *  Press CTRL+ALT+DEL to restart your system. You will lose any unsaved buzzwords.
+                <br /><br />
+                Error parameters:<br />
+                Grader engine check: FAILED<br />
+                Confidence buffer: OVERFLOW
+              </div>
+              <div className="bsod-tech-info">
+                Technical Information:<br />
+                *** STOP: 0x000000D1 (0x0000000C, 0x00000002, 0x00000000, 0xF73120AE)<br />
+                *** confidence.js - Address F73120AE base at F7312000, DateStamp 36b0727a
+              </div>
+            </>
+          ) : (
+            <span>jk lol</span>
+          )}
+        </div>
+      )}
+
+      {/* 13. Recruiter is typing indicator (Rule 13) */}
+      {recruiterTyping && !analysis?.isGenuinelyGood && (
+        <div className="recruiter-typing-indicator font-mono">
+          <span>💬 Recruiter is typing...</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 1. Recruiter Deleted view component
+function RecruiterDeletedView({ onReset }) {
+  const [step, setStep] = useState(0);
+  
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      setStep(1);
+    }, 1000);
+    
+    const t2 = setTimeout(() => {
+      setStep(2);
+      soundSynthesizer.playGlitch();
+    }, 3000);
+    
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+  
+  return (
+    <div className={`recruiter-deleted-screen ${step === 0 ? 'flash-red-active' : ''}`}>
+      <div className="deleted-terminal">
+        <div className="terminal-header-bar">
+          <span className="dot red-dot"></span>
+          <span className="dot yellow-dot"></span>
+          <span className="dot green-dot"></span>
+          <span className="terminal-title">WARNING: ROOT_SHELL_EXPLOIT</span>
+        </div>
+        <div className="terminal-body">
+          <div className="terminal-command-line">
+            <span className="prompt">$</span> rm -rf recruiter
+          </div>
+          
+          {step >= 1 && (
+            <div className="terminal-output success-text">
+              <span className="blink-arrow">&gt;</span> Human Resources process terminated successfully.
+              <br />
+              <span className="blink-arrow">&gt;</span> recruiter.bin deleted from local memory sector.
+              <br />
+              <span className="blink-arrow">&gt;</span> ATS_filter_bypass = true
+            </div>
+          )}
+          
+          {step >= 2 && (
+            <div className="terminal-output error-text animate-flicker">
+              <pre style={{ margin: 0, fontFamily: 'inherit' }}>
+{`ERROR:
+recruiter process regenerated from corporate backup servers.
+CRITICAL OVERRIDE: Recruitment nodes cannot be permanently uninstalled.
+Corporate compliance modules active.
+Grader algorithms online.`}
+              </pre>
+            </div>
+          )}
+          
+          {step >= 2 && (
+            <button className="terminal-reset-btn" onClick={onReset}>
+              [ ACKNOWLEDGE & RESTORE SANITY ]
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

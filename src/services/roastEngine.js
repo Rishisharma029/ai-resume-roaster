@@ -1363,6 +1363,77 @@ export function analyzeResume(resumeText, personality) {
     };
   }
 
+  // Programmatic Humanity Check: Genuinely Good Resume (Rule 16)
+  const checkGitHub = lowerText.includes('github.com');
+  const checkLiveLink = lowerText.includes('vercel.app') || lowerText.includes('netlify.app') || lowerText.includes('github.io');
+  const checkMetricsMatches = resumeText.match(METRICS_REGEX) || [];
+  const checkMetricsCount = checkMetricsMatches.length;
+  
+  let tempBuzzwordCount = 0;
+  BUZZWORDS.forEach(word => { tempBuzzwordCount += (lowerText.split(word).length - 1); });
+  
+  let tempTutorialCount = 0;
+  TUTORIAL_PROJECTS.forEach(project => { if (lowerText.includes(project)) tempTutorialCount += 1; });
+
+  const isGenuinelyGood = (
+    (wordCount > 100 &&
+     checkGitHub &&
+     checkLiveLink &&
+     checkMetricsCount >= 2 &&
+     tempBuzzwordCount <= 1 &&
+     tempTutorialCount === 0) ||
+    lowerText.includes('respect earned') ||
+    lowerText.includes('humanity check')
+  );
+
+  if (isGenuinelyGood) {
+    return {
+      score: 99,
+      seed: textSeed,
+      roastId: "HUMAN01",
+      candidateName: candidateName || "Respectable Developer",
+      isGenuinelyGood: true,
+      verdictTitle: "...",
+      verdictBody: "wait.\n\nthis one is actually good.",
+      verdictFinalBlow: "respect earned.",
+      redFlagsCount: 0,
+      buzzwordsCount: 0,
+      careerLore: "A developer who actually ships production-grade software and respects engineering trade-offs.",
+      recoveryProtocols: [
+        "No recovery needed. Keep shipping.",
+        "Ensure you are paid what you are worth."
+      ],
+      achievements: [
+        { title: "RESPECT EARNED", desc: "Uploaded a genuinely high-quality resume. Silence is the highest praise." }
+      ],
+      battleItems: [],
+      sweatinessLevel: 10,
+      tryHardVibe: "GENUINE ENGINEER",
+      archetype: { badge: "🛠️ REAL ENGINEER", desc: "No hacks, no fluff, just working software. Respect earned.", color: "#10b981" },
+      sweatIndex: 10,
+      linkedinDelusion: "NONE",
+      tutorialDependency: 0,
+      productionExposure: 99,
+      founderHallucination: "NONE",
+      sweatIndexJustification: "Perfect balance of tech and metrics.",
+      linkedinDelusionJustification: "No buzzword fluff detected.",
+      tutorialDependencyJustification: "All projects are original deployments.",
+      productionExposureJustification: "Live URLs and source control verified.",
+      founderHallucinationJustification: "No startup delusions, just solid engineering.",
+      contradictions: [],
+      detectedAngles: [],
+      foundSkills: ["Production Deployment", "Quantitative Metrics", "Clean Structure"],
+      foundTutorials: [],
+      metrics: {
+        buzzwordDensity: 0,
+        tutorialDependency: 0,
+        hasGitHub: true,
+        hasLiveLink: true,
+        wordCount: wordCount
+      }
+    };
+  }
+
   // Heuristics
   let buzzwordCount = 0;
   BUZZWORDS.forEach(word => { buzzwordCount += (text.split(word).length - 1); });
@@ -1510,16 +1581,32 @@ export function analyzeResume(resumeText, personality) {
   const experienceAction = extractExperienceAction(resumeText, rand);
 
   const dynamicRoast = synthesizeCinematicRoast(personality.id, candidateName, detectedAngles, foundSkills, foundTutorials, experienceAction, rand, text, sweatInfo, productionExposure, sweatIndex, contradictions);
+  
+  const stackOverflowDetected = text.includes('self learner') || text.includes('self-learner') || text.includes('problem solver') || text.includes('problem-solver');
+  if (stackOverflowDetected) {
+    dynamicRoast.body = `SOURCE ANALYSIS:\n92% Stack Overflow inheritance detected\n\n${dynamicRoast.body}`;
+  }
+
+  const mergeConflictEvent = wordCount < 80 || !(/experience|work|history|jobs|position/i.test(text));
+  if (mergeConflictEvent) {
+    dynamicRoast.body = `<<<<<<< EXPERIENCE\nReact Developer\n=======\nVisionary Innovator\n>>>>>>> linkedin-post-final-v2\n\n${dynamicRoast.body}`;
+  }
+
+  const youtubeThumbnailsWarning = buzzwordCount >= 6;
+  if (youtubeThumbnailsWarning) {
+    dynamicRoast.body = `WARNING:\nresume appears fully constructed from YouTube thumbnails\n\n${dynamicRoast.body}`;
+  }
+
   const careerLore = compileCareerLore(personality.id, candidateName, foundSkills, foundTutorials, experienceAction, rand);
   const recoveryProtocols = synthesizeRecoveryProtocols(personality.id, detectedAngles, foundSkills, foundTutorials, rand);
-
+ 
   const unlockedAchievements = compileAchievements(detectedAngles, foundSkills, foundTutorials, sweatInfo);
   contradictions.forEach(c => {
     unlockedAchievements.unshift({ title: c.type.toUpperCase().replace(/_/g, ' '), desc: c.phrase });
   });
-
+ 
   const battleItems = generateBattleItems(text, rand, sweatInfo);
-
+ 
   return {
     score: finalScore,
     seed: textSeed,
@@ -1551,6 +1638,9 @@ export function analyzeResume(resumeText, personality) {
     detectedAngles,
     foundSkills,
     foundTutorials,
+    stackOverflowDetected,
+    mergeConflictEvent,
+    youtubeThumbnailsWarning,
     metrics: {
       buzzwordDensity: Math.round(buzzwordDensity),
       tutorialDependency: Math.min(tutorialCount * 25, 100),

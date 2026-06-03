@@ -49,6 +49,21 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
     });
   };
 
+  const isLinkedInProphet = archetype?.badge?.includes('LINKEDIN') || linkedinDelusion === 'CRITICAL' || linkedinDelusion === 'HIGH';
+
+  // 14. LinkedIn Final Boss podcast music player
+  React.useEffect(() => {
+    let podcastMusic = null;
+    if (isLinkedInProphet && !analysis.isGenuinelyGood) {
+      podcastMusic = soundSynthesizer.playPodcastMusic();
+    }
+    return () => {
+      if (podcastMusic) {
+        podcastMusic.stop();
+      }
+    };
+  }, [isLinkedInProphet, analysis.isGenuinelyGood]);
+
   const getPrimaryColor = () => {
     const id = personality.id;
     if (id === 'staff_engineer') return '#ff0055';
@@ -75,11 +90,96 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
 
   const primaryColor = getPrimaryColor();
 
+  const motivationalQuotes = [
+    "“Don't watch the clock; do what it does. Keep going and post about it.”",
+    "“Synergy is not a buzzword; it is a lifestyle of networking.”",
+    "“Your 3 AM code is someone else's 9 AM inspiration.”",
+    "“Failure is just a pivot before the exit.”",
+    "“Hustle until your competitors ask if you are hiring.”",
+    "“The best API wrapper is the one that raises at a $10M valuation.”"
+  ];
+
+  // 16. Hidden Humanity Check view override
+  if (analysis.isGenuinelyGood) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '80vh',
+        color: '#888',
+        fontFamily: 'monospace',
+        textAlign: 'center',
+        padding: '40px',
+        boxSizing: 'border-box'
+      }}>
+        <div style={{
+          maxWidth: '500px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '24px',
+          textAlign: 'left'
+        }}>
+          <p style={{ margin: 0, fontSize: '1.2rem', letterSpacing: '1px' }}>...</p>
+          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'normal', color: '#ccc', letterSpacing: '1px' }}>wait.</h1>
+          <p style={{ margin: 0, fontSize: '1.2rem', color: '#aaa', letterSpacing: '0.5px' }}>this one is actually good.</p>
+          <p style={{ margin: 0, fontSize: '1.2rem', color: '#fff', fontWeight: 'bold', textShadow: '0 0 8px rgba(255,255,255,0.2)', letterSpacing: '1.5px' }}>respect earned.</p>
+          
+          <button 
+            onClick={handleReset}
+            style={{
+              marginTop: '40px',
+              background: 'transparent',
+              border: '1px solid #444',
+              color: '#666',
+              padding: '10px 20px',
+              fontFamily: 'monospace',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              borderRadius: '4px',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => { e.target.style.color = '#ccc'; e.target.style.borderColor = '#ccc'; }}
+            onMouseLeave={(e) => { e.target.style.color = '#666'; e.target.style.borderColor = '#444'; }}
+          >
+            [ Go Back ]
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const quoteIdx = roastId ? roastId.charCodeAt(0) % motivationalQuotes.length : 0;
+
   return (
-    <div style={{ zIndex: 10, position: 'relative', width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '20px 20px 100px 20px', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+    <div 
+      className={isLinkedInProphet ? 'linkedin-final-boss-active' : ''}
+      style={{ 
+        zIndex: 10, 
+        position: 'relative', 
+        width: '100%', 
+        maxWidth: '1050px', 
+        margin: '0 auto', 
+        padding: '20px 20px 100px 20px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '40px',
+        borderRadius: isLinkedInProphet ? '12px' : '0',
+        transition: 'all 0.5s ease'
+      }}
+    >
       
       {/* Reset button at very top */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          {isLinkedInProphet && (
+            <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              ⚡ CORPORATE SIGMA ASCENDED MODE ACTIVE
+            </span>
+          )}
+        </div>
         <motion.button
           onClick={handleReset}
           whileHover={{ scale: 1.03 }}
@@ -103,6 +203,25 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
           <RefreshCw size={12} /> Submit Another Resume
         </motion.button>
       </div>
+
+      {isLinkedInProphet && (
+        <div style={{
+          background: 'rgba(56, 189, 248, 0.08)',
+          border: '1px solid rgba(56, 189, 248, 0.3)',
+          borderRadius: '8px',
+          padding: '15px 20px',
+          color: '#38bdf8',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.8rem',
+          textAlign: 'center',
+          boxShadow: '0 0 15px rgba(56, 189, 248, 0.1)'
+        }}>
+          <div style={{ fontSize: '0.6rem', color: 'rgba(56, 189, 248, 0.6)', marginBottom: '5px', letterSpacing: '2px', textTransform: 'uppercase' }}>
+            🏆 CORPORATE SIGMA ASCENDED // MANDATORY MOTIVATION
+          </div>
+          {motivationalQuotes[quoteIdx]}
+        </div>
+      )}
 
       {/* SECTION 1: OFFICIAL VERDICT CARD (Screenshot 1) */}
       <div 

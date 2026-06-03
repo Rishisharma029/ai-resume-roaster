@@ -3,6 +3,8 @@
 
 let audioCtx = null;
 let isMuted = localStorage.getItem('roaster_muted') === 'true';
+let podcastInterval = null;
+let activeOscillators = [];
 
 // Helper to initialize or resume audio context
 function getAudioContext() {
@@ -193,5 +195,133 @@ export const soundSynthesizer = {
       osc.start(now + index * 0.08);
       osc.stop(now + index * 0.08 + 0.55);
     });
+  },
+
+  playDiscordPing() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const freqs = [880, 680];
+    const times = [0, 0.08];
+    
+    freqs.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + times[idx]);
+      gainNode.gain.setValueAtTime(0.06, now + times[idx]);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + times[idx] + 0.2);
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.start(now + times[idx]);
+      osc.stop(now + times[idx] + 0.25);
+    });
+  },
+
+  playKeyboardSpam() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    for (let i = 0; i < 8; i++) {
+      const delay = Math.random() * 1.2;
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800 + Math.random() * 400, now + delay);
+      osc.frequency.exponentialRampToValueAtTime(80, now + delay + 0.04);
+      gainNode.gain.setValueAtTime(0.04, now + delay);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.04);
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.start(now + delay);
+      osc.stop(now + delay + 0.05);
+    }
+  },
+
+  playDeepSigh() {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const duration = 1.5;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(320, now);
+    filter.frequency.exponentialRampToValueAtTime(140, now + duration);
+    filter.Q.setValueAtTime(2.0, now);
+    const gainNode = ctx.createGain();
+    gainNode.gain.setValueAtTime(0.0, now);
+    gainNode.gain.linearRampToValueAtTime(0.1, now + 0.2);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+    noiseSource.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    noiseSource.start(now);
+    noiseSource.stop(now + duration + 0.1);
+  },
+
+  playPodcastMusic() {
+    const ctx = getAudioContext();
+    if (!ctx) return { stop: () => {} };
+    
+    if (podcastInterval) {
+      clearInterval(podcastInterval);
+      podcastInterval = null;
+    }
+    
+    const playChord = (chordNotes, startTime) => {
+      chordNotes.forEach(freq => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gainNode.gain.setValueAtTime(0.0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.03, startTime + 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 3.0);
+        activeOscillators.push(osc);
+      });
+    };
+    
+    const chords = [
+      [110.00, 130.81, 164.81, 196.00], // Am7
+      [146.83, 185.00, 220.00, 261.63], // D7
+      [98.00, 246.94, 293.66, 369.99],  // Gmaj7
+      [130.81, 164.81, 196.00, 246.94]  // Cmaj7
+    ];
+    
+    let chordIndex = 0;
+    const intervalTime = 3000;
+    const nextChord = () => {
+      const now = ctx.currentTime;
+      playChord(chords[chordIndex], now);
+      chordIndex = (chordIndex + 1) % chords.length;
+    };
+    
+    nextChord();
+    podcastInterval = setInterval(nextChord, intervalTime);
+    
+    return {
+      stop: () => {
+        if (podcastInterval) {
+          clearInterval(podcastInterval);
+          podcastInterval = null;
+        }
+        activeOscillators.forEach(osc => {
+          try { osc.stop(); } catch(e) {}
+        });
+        activeOscillators = [];
+      }
+    };
   }
 };

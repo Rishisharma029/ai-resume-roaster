@@ -31,8 +31,16 @@ export default function ScanningView({ personality, onComplete }) {
 
   // Update progress, timers, and write logs
   useEffect(() => {
-    // 1. Logs addition
-    const logsPool = personality.scanLogs;
+    // 1. Logs addition with npm install trauma (Rule 11)
+    const logsPool = [
+      ...personality.scanLogs.slice(0, 2),
+      "npm install --legacy-peer-deps",
+      "installing dependencies...",
+      "⚠️ DEPRECATED PACKAGE DETECTED: left-pad@0.0.3",
+      "⚠️ 217 VULNERABILITIES FOUND (144 moderate, 73 high)",
+      "INFO: continuing anyway...",
+      ...personality.scanLogs.slice(2)
+    ];
     const addLog = () => {
       if (logIndexRef.current < logsPool.length) {
         setLogs(prev => [...prev, logsPool[logIndexRef.current]]);
