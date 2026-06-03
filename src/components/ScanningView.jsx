@@ -12,6 +12,12 @@ export default function ScanningView({ personality, onComplete }) {
   
   const logIndexRef = useRef(0);
   const scanSweepRef = useRef(null);
+  const onCompleteRef = useRef(onComplete);
+
+  // Sync onComplete reference to prevent effect teardowns on parent re-renders
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // Setup loop for scanning sound
   useEffect(() => {
@@ -77,7 +83,9 @@ export default function ScanningView({ personality, onComplete }) {
         clearInterval(timer);
         clearInterval(logInterval);
         soundSynthesizer.playBassDrop();
-        setTimeout(onComplete, 500);
+        setTimeout(() => {
+          onCompleteRef.current?.();
+        }, 500);
       }
     }, 50);
 
@@ -85,7 +93,7 @@ export default function ScanningView({ personality, onComplete }) {
       clearInterval(timer);
       clearInterval(logInterval);
     };
-  }, [personality, onComplete]);
+  }, [personality]);
 
   // Recruiter Eye Gaze jump movements (humanized)
   useEffect(() => {

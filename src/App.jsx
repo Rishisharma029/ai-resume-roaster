@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Flame, ShieldAlert, Sparkles, Volume2, VolumeX, History, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Uploader from './components/Uploader';
@@ -331,11 +331,11 @@ export default function App() {
     setAppState('SCANNING');
   };
 
-  const handleScanComplete = () => {
+  const handleScanComplete = useCallback(() => {
     const results = analyzeResume(resumeText, selectedPersonality);
     setAnalysis(results);
     setAppState('ANALYZED');
-  };
+  }, [resumeText, selectedPersonality]);
 
   const handleReset = () => {
     soundSynthesizer.playKeyClick();
