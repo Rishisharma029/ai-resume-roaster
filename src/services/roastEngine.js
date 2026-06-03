@@ -1496,6 +1496,16 @@ export function analyzeResume(resumeText, personality) {
   const archetypeStats = { tutorialCount, buzzwordCount, productionExposure };
   const archetype = classifyArchetype(resumeText, archetypeStats);
 
+  // Heuristics for the 12 selected Easter Eggs
+  const isCSSWizard = frameworks.filter(fw => text.includes(fw)).length >= 4 && !(/sql|postgres|node|redis|database|mongodb|backend/i.test(text));
+  const isReadmePhilosopher = /readme|documentation|docs\b|writing guidelines|markdown/i.test(text);
+  const isUnicornDetector = /startup|pitch deck|seed round|pre-seed|venture capital|founder|ceo/i.test(text) && !(/revenue|profit|arr\b|mrr\b|users|paying/i.test(text));
+  const isPitchDeckSurvivor = /pitch deck|slides|powerpoint|keynote/i.test(text);
+  const isAncientResume = wordCount > 1300;
+  const isOpenSourceTourist = /forked|cloned|contribution|merged/i.test(text) && !(/deployed|maintained|original|primary author/i.test(text));
+  const isFinalFinalV2 = /final[-_]final|REAL|v7|v2\b/i.test(text) || (resumeText && /final_final/i.test(resumeText));
+  const isProductivityGuru = tutorialCount >= 2 || text.includes('clone') || text.includes('todo list');
+
   const specificObservations = [];
   if (text.includes('weather')) specificObservations.push("weather app addiction");
   if (text.includes('calculator')) specificObservations.push("calculator project recurrence");
@@ -1510,6 +1520,15 @@ export function analyzeResume(resumeText, personality) {
   if (!hasLiveLink && hasGitHub) specificObservations.push("deployment links returning 404");
   if (/framer\s*motion|gsap|three\.js|animation/i.test(text) && !/sql|postgres|node|redis|database|mongodb/i.test(text)) specificObservations.push("portfolio animations hiding weak backend skills");
   if (!hasGitHub && wordCount < 180) specificObservations.push("naming files final-final-v2-REAL.zip");
+
+  if (isCSSWizard) specificObservations.push("backend whereabouts unknown");
+  if (isReadmePhilosopher) specificObservations.push("documentation exceeds implementation");
+  if (isUnicornDetector) specificObservations.push("unicorn status: ₹0 ARR");
+  if (isPitchDeckSurvivor) specificObservations.push("more slides than active users");
+  if (isAncientResume) specificObservations.push("ancient scroll text length");
+  if (isOpenSourceTourist) specificObservations.push("open source repo tourism");
+  if (isFinalFinalV2) specificObservations.push("naming files final-final-v2-REAL.pdf");
+  if (isProductivityGuru) specificObservations.push("500 tutorials build nothing");
 
   const listedFrameworks = frameworks.filter(fw => text.includes(fw)).map(fw => fw.toUpperCase());
 
@@ -1604,7 +1623,16 @@ export function analyzeResume(resumeText, personality) {
   contradictions.forEach(c => {
     unlockedAchievements.unshift({ title: c.type.toUpperCase().replace(/_/g, ' '), desc: c.phrase });
   });
- 
+
+  if (isCSSWizard) unlockedAchievements.push({ title: "CSS WIZARD", desc: "Too much frontend styling. Backend whereabouts unknown." });
+  if (isReadmePhilosopher) unlockedAchievements.push({ title: "README PHILOSOPHER", desc: "Documentation length exceeds original logic implementation." });
+  if (isUnicornDetector) unlockedAchievements.push({ title: "STEALTH UNICORN", desc: "Pre-revenue, pre-product, pre-sanity startup claims." });
+  if (isPitchDeckSurvivor) unlockedAchievements.push({ title: "PITCH DECK SURVIVOR", desc: "Successfully survived 45 slide reviews with 0 active users." });
+  if (isAncientResume) unlockedAchievements.push({ title: "THE ANCIENT SCROLL", desc: "Resume text count exceeds 1300 words. Lengthy scroll of code." });
+  if (isOpenSourceTourist) unlockedAchievements.push({ title: "OPEN SOURCE TOURIST", desc: "Forked 50 repositories but never contributed a single PR comment." });
+  if (isFinalFinalV2) unlockedAchievements.push({ title: "FINAL-FINAL-V2", desc: "Uploaded a resume matching classic file naming disasters." });
+  if (isProductivityGuru) unlockedAchievements.push({ title: "PRODUCTIVITY GURU", desc: "Completed 50 tutorials, built 0 original production items." });
+
   const battleItems = generateBattleItems(text, rand, sweatInfo);
  
   return {
@@ -1641,6 +1669,14 @@ export function analyzeResume(resumeText, personality) {
     stackOverflowDetected,
     mergeConflictEvent,
     youtubeThumbnailsWarning,
+    isCSSWizard,
+    isReadmePhilosopher,
+    isUnicornDetector,
+    isPitchDeckSurvivor,
+    isAncientResume,
+    isOpenSourceTourist,
+    isFinalFinalV2,
+    isProductivityGuru,
     metrics: {
       buzzwordDensity: Math.round(buzzwordDensity),
       tutorialDependency: Math.min(tutorialCount * 25, 100),

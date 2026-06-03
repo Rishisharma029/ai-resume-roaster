@@ -1517,3 +1517,200 @@ body {
   50% { opacity: 1; }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   12 SELECTED EASTER EGGS AND CHAOS EXPANSION UTILITY STYLES
+   ════════════════════════════════════════════════════════════════ */
+
+/* 1. Hacker Mode phosphor green monochrome styling */
+.hacker-mode-active {
+  background-color: #000000 !important;
+  color: #39ff14 !important;
+  font-family: var(--font-mono) !important;
+  filter: sepia(0.1) contrast(1.15) !important;
+}
+
+.hacker-mode-active h1,
+.hacker-mode-active h2,
+.hacker-mode-active h3,
+.hacker-mode-active h4,
+.hacker-mode-active p,
+.hacker-mode-active span,
+.hacker-mode-active div,
+.hacker-mode-active button,
+.hacker-mode-active input,
+.hacker-mode-active textarea {
+  color: #39ff14 !important;
+  font-family: var(--font-mono) !important;
+  border-color: rgba(57, 255, 20, 0.4) !important;
+  text-shadow: 0 0 3px rgba(57, 255, 20, 0.5) !important;
+}
+
+.hacker-mode-active .cyber-grid {
+  background-image: linear-gradient(rgba(57, 255, 20, 0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(57, 255, 20, 0.04) 1px, transparent 1px) !important;
+}
+
+.hacker-mode-active button:hover {
+  background: rgba(57, 255, 20, 0.12) !important;
+  box-shadow: 0 0 8px #39ff14 !important;
+}
+
+/* 2. Stealth Mode CSS Blur filter */
+.stealth-blur-active {
+  filter: blur(8px) grayscale(0.5);
+  pointer-events: none;
+  transition: filter 0.4s ease;
+}
+
+.stealth-mode-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 10, 15, 0.95);
+  border: 2px solid #ff6600;
+  box-shadow: 0 0 30px rgba(255, 102, 0, 0.4);
+  padding: 30px;
+  border-radius: 8px;
+  z-index: 10000;
+  max-width: 450px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.stealth-mode-title {
+  color: #ff6600;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.stealth-mode-desc {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.stealth-reveal-btn {
+  background: #ff6600;
+  color: #000;
+  border: none;
+  font-family: var(--font-mono);
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255,102,0,0.3);
+  transition: all 0.2s;
+}
+
+.stealth-reveal-btn:hover {
+  box-shadow: 0 0 15px rgba(255,102,0,0.6);
+  transform: translateY(-1px);
+}
+
+/* 3. Caffeine Toxic Jitters Screen Shake */
+.jitter-active {
+  animation: toxicJitter 0.08s infinite !important;
+}
+
+@keyframes toxicJitter {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  25% { transform: translate(-1px, -1px) rotate(0.2deg); }
+  50% { transform: translate(-2px, 0px) rotate(-0.2deg); }
+  75% { transform: translate(1px, -1px) rotate(0deg); }
+  100% { transform: translate(0px, 1px) rotate(0.1deg); }
+}
+
+/* 4. Windows XP Style Error Dialogues */
+.xp-dialog-window {
+  position: fixed;
+  width: 320px;
+  background: #f1efe7;
+  border: 2px solid #0054e3;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.6);
+  font-family: Tahoma, Arial, sans-serif;
+  color: #000;
+  z-index: 10001;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.xp-dialog-header {
+  background: linear-gradient(180deg, #0054e3 0%, #2e7afb 10%, #0054e3 40%, #0026a0 100%);
+  color: #fff;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.xp-dialog-title {
+  letter-spacing: 0.5px;
+}
+
+.xp-dialog-close-btn {
+  background: linear-gradient(180deg, #d34220 0%, #f77e62 30%, #ce3210 60%, #a21a00 100%);
+  border: 1px solid #7d1c00;
+  color: #fff;
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.xp-dialog-body {
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.xp-dialog-icon {
+  font-size: 1.8rem;
+  color: #d32f2f;
+}
+
+.xp-dialog-content {
+  flex: 1;
+  text-align: left;
+}
+
+.xp-dialog-footer {
+  padding: 8px 16px 12px 16px;
+  text-align: right;
+}
+
+.xp-dialog-ok-btn {
+  background: #f1efe7;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  padding: 4px 18px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: #000;
+  box-shadow: inset 1px 1px 0 #fff;
+}
+
+.xp-dialog-ok-btn:hover {
+  background: #e5e2d6;
+}
+
+.xp-dialog-ok-btn:active {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+}
+

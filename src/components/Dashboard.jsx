@@ -4,7 +4,7 @@ import { Flame, Trophy, Award, Sparkles, RefreshCw, Copy, Check } from 'lucide-r
 import { soundSynthesizer } from '../services/soundSynthesizer';
 import RoastCard from './RoastCard';
 
-export default function Dashboard({ analysis, resumeText, personality, onReset }) {
+export default function Dashboard({ analysis, resumeText, personality, onReset, stealthMode, setStealthMode, touchGrassTimer, parseCount }) {
   const {
     score,
     roastId,
@@ -33,6 +33,127 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
     founderHallucinationJustification,
     metrics
   } = analysis;
+
+  // RPG Boss fight state variables (Recruiter Horror, #10)
+  const [bossHp, setBossHp] = useState(100);
+  const [playerHp, setPlayerHp] = useState(100);
+  const [battleLog, setBattleLog] = useState(["An aggressive ATS Grader has appeared! Defeat it to summon an interview."]);
+  const [battleStatus, setBattleStatus] = useState("FIGHTING"); // FIGHTING, WON, LOST
+
+  // Seed round clicker states (Startup Founder Delusion, #16)
+  const [seedValuation, setSeedValuation] = useState(10); // millions
+  const [seedHeadline, setSeedHeadline] = useState("Localhost project wrapper raises seed round.");
+  const [seedStep, setSeedStep] = useState(0);
+
+  // Draggable XP popups (Internet Culture, #48)
+  const [xpDialogs, setXpDialogs] = useState([]);
+
+  const handleBattleAction = (action) => {
+    if (battleStatus !== 'FIGHTING') return;
+
+    soundSynthesizer.playKeyClick();
+    let pDamage = 0;
+    let logMsg = "";
+    
+    if (action === 'metrics') {
+      pDamage = 25;
+      logMsg = "You attacked with Quantitative Metrics! Slashing ATS filters by 25HP.";
+    } else if (action === 'bullet') {
+      pDamage = 12;
+      logMsg = "You formatted bullet points with action verbs! Slashing ATS filters by 12HP.";
+    } else if (action === 'localhost') {
+      pDamage = 4;
+      logMsg = "You dropped a localhost deployment link! ATS evaded. Slashing 4HP.";
+    }
+
+    const nextBossHp = Math.max(0, bossHp - pDamage);
+    setBossHp(nextBossHp);
+
+    if (nextBossHp <= 0) {
+      setBattleStatus("WON");
+      setBattleLog(prev => [logMsg, "🏆 ATS Boss Defeated! Grader filters bypassed. Interview invitation summoned.", ...prev]);
+      soundSynthesizer.playUnlock();
+      return;
+    }
+
+    const bossAttacks = [
+      { name: "REJECTED (Missing experience)", damage: 15 },
+      { name: "AUTO-FILTER (Buzzword Overdose)", damage: 20 },
+      { name: "GHOSTED (No explanation)", damage: 10 }
+    ];
+    const attack = bossAttacks[Math.floor(Math.random() * bossAttacks.length)];
+    const nextPlayerHp = Math.max(0, playerHp - attack.damage);
+    setPlayerHp(nextPlayerHp);
+
+    if (nextPlayerHp <= 0) {
+      setBattleStatus("LOST");
+      setBattleLog(prev => [logMsg, `💀 ATS Boss countered with ${attack.name}! Ego destroyed. "We'll get back to you."`, ...prev]);
+      soundSynthesizer.playBassDrop();
+      return;
+    }
+
+    setBattleLog(prev => [logMsg, `💥 ATS countered with ${attack.name} (dealing ${attack.damage} damage to Candidate Ego).`, ...prev]);
+  };
+
+  const handleSeedSim = () => {
+    soundSynthesizer.playKeyClick();
+    const nextVal = Math.round(seedValuation * 2.2 + 5);
+    setSeedValuation(nextVal);
+    
+    const headlines = [
+      `Venture Capital firms inject funding. Valuation: $${nextVal}M.`,
+      `CEO claims AI Resume Roaster is 'Uber for resumes'. Valuation: $${nextVal}M.`,
+      `Pre-seed pivot into a wrapper around Claude Sonnet. Valuation: $${nextVal}M.`,
+      `Stealth landing page launches with 10k waitlist bots. Valuation: $${nextVal}M.`,
+      `Stealth company achieves unicorn status with ₹0 ARR. Valuation: $${nextVal}M.`,
+      `Valuation peaks at $${nextVal}M. Founder updates LinkedIn bio.`,
+      `Bankruptcy declared. Runway collapsed. Valuation: $0.`
+    ];
+
+    const nextStep = seedStep + 1;
+    setSeedStep(nextStep);
+
+    if (nextStep >= headlines.length) {
+      setSeedValuation(0);
+      setSeedHeadline("Bankruptcy declared. Dilution exceeds physical constraints. Runway: 0 days.");
+      setSeedStep(0);
+      soundSynthesizer.playBassDrop();
+    } else {
+      setSeedHeadline(headlines[nextStep]);
+      soundSynthesizer.playGlitch();
+    }
+  };
+
+  const spawnXpDialog = () => {
+    soundSynthesizer.playKeyClick();
+    soundSynthesizer.playGlitch();
+    
+    const errors = [
+      "Ego density out of boundaries.",
+      "LinkedIn delusion levels: CRITICAL.",
+      "Warning: Localhost environment myth confirmed.",
+      "Tutorial dependency exception.",
+      "Cannot compile confidence.js.",
+      "Attention span lost. Redirecting to coffee maker."
+    ];
+
+    const newDialog = {
+      id: Date.now(),
+      title: "Parser Grader Diagnostic",
+      text: errors[Math.floor(Math.random() * errors.length)],
+      x: 100 + Math.random() * 200,
+      y: 150 + Math.random() * 200
+    };
+
+    setXpDialogs(prev => [...prev, newDialog]);
+  };
+
+  const closeXpDialog = (id) => {
+    soundSynthesizer.playKeyClick();
+    setXpDialogs(prev => prev.filter(d => d.id !== id));
+  };
+
+  const isPerfectScore = score === 100;
 
   const handleReset = () => {
     soundSynthesizer.playKeyClick();
@@ -278,6 +399,29 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
         }}>
           {verdictBody}
         </p>
+
+        {isPerfectScore && (
+          <div style={{
+            marginTop: '30px',
+            padding: '20px',
+            background: 'rgba(250, 204, 21, 0.03)',
+            border: '1px solid #facc15',
+            boxShadow: '0 0 15px rgba(250, 204, 21, 0.1)',
+            borderRadius: '4px',
+            fontFamily: 'var(--font-mono)',
+            color: '#fef08a',
+            fontSize: '0.75rem',
+            lineHeight: '1.8'
+          }}>
+            <div style={{ color: '#facc15', fontWeight: 'bold', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px' }}>
+              🌟 ULTIMATE SECRET ENDING (#66) 🌟
+            </div>
+            <p style={{ margin: '0 0 8px 0' }}>The parser has seen thousands of resumes.</p>
+            <p style={{ margin: '0 0 8px 0' }}>Most wanted shortcuts.</p>
+            <p style={{ margin: '0 0 8px 0' }}>A few kept building.</p>
+            <p style={{ margin: '0', fontWeight: 'bold' }}>Keep building.</p>
+          </div>
+        )}
 
         {/* Heuristic Stats boxes */}
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '35px' }}>
@@ -607,6 +751,152 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
         </div>
       </div>
 
+      {/* 12 SELECTED EASTER EGGS PANEL */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px', margin: '40px 0' }} className="asymmetric-card-spacing">
+        
+        {/* Left: ATS Final Boss Minigame (Recruiter Horror, #10) */}
+        <div className="glass-panel" style={{ padding: '24px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+          <div style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)', paddingBottom: '8px', marginBottom: '16px' }}>
+            <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: '#ef4444', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              🎮 MINI-GAME // ATS FINAL BOSS FIGHT
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                <span style={{ color: '#ef4444' }}>👹 ATS GRADER HP</span>
+                <span>{bossHp}/100</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${bossHp}%`, height: '100%', background: '#ef4444', boxShadow: '0 0 8px #ef4444', transition: 'width 0.2s' }} />
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                <span style={{ color: '#38bdf8' }}>💻 CANDIDATE EGO HP</span>
+                <span>{playerHp}/100</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${playerHp}%`, height: '100%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8', transition: 'width 0.2s' }} />
+              </div>
+            </div>
+
+            {battleStatus === 'FIGHTING' ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
+                <button 
+                  onClick={() => handleBattleAction('metrics')}
+                  style={{ background: 'transparent', border: '1px solid #10b981', color: '#10b981', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', padding: '6px', cursor: 'pointer', borderRadius: '3px' }}
+                >
+                  🚀 Attack (Metrics)
+                </button>
+                <button 
+                  onClick={() => handleBattleAction('bullet')}
+                  style={{ background: 'transparent', border: '1px solid #eab308', color: '#eab308', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', padding: '6px', cursor: 'pointer', borderRadius: '3px' }}
+                >
+                  📝 Attack (Verbs)
+                </button>
+                <button 
+                  onClick={() => handleBattleAction('localhost')}
+                  style={{ background: 'transparent', border: '1px solid #a1a1aa', color: '#a1a1aa', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', padding: '6px', cursor: 'pointer', borderRadius: '3px', gridColumn: 'span 2' }}
+                >
+                  🌐 Attack (Localhost Link)
+                </button>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', margin: '10px 0' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '0.8rem', color: battleStatus === 'WON' ? '#10b981' : '#ef4444' }}>
+                  {battleStatus === 'WON' ? '🏆 BATTLE WON!' : '💀 EGO ANNIHILATED'}
+                </span>
+                <button 
+                  onClick={() => { setBossHp(100); setPlayerHp(100); setBattleStatus("FIGHTING"); setBattleLog(["Grader re-summoned. Prepare to compile."]); }}
+                  style={{ display: 'block', margin: '8px auto 0 auto', background: 'transparent', border: '1px solid var(--theme-primary)', color: 'var(--theme-primary)', fontFamily: 'var(--font-mono)', fontSize: '0.6rem', padding: '4px 10px', cursor: 'pointer', borderRadius: '3px' }}
+                >
+                  [ Revive & Restart Fight ]
+                </button>
+              </div>
+            )}
+
+            <div style={{ background: '#050508', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '4px', padding: '10px', height: '80px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {battleLog.map((log, idx) => (
+                <div key={idx} style={{ fontSize: '0.6rem', fontFamily: 'var(--font-mono)', color: idx === 0 ? '#fff' : '#52525b', lineHeight: '1.3', textAlign: 'left' }}>
+                  &gt; {log}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Startup Founder / Delusion clicker & triggers */}
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
+            <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: 'var(--theme-primary)', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              💸 STARTUP SEED SIMULATOR & OVERRIDES
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '4px', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: '0.6rem', fontFamily: 'var(--font-mono)', color: '#71717a' }}>VALUATION CALCULATOR (#20)</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 900, color: '#eab308' }}>Users: 0 → Valuation: $8.4B</div>
+              </div>
+              <button 
+                onClick={handleSeedSim}
+                style={{ background: '#eab308', border: 'none', color: '#000', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 'bold', padding: '6px 12px', borderRadius: '3px', cursor: 'pointer' }}
+              >
+                [ Raise Valuation ]
+              </button>
+            </div>
+            
+            <div style={{ fontSize: '0.6rem', fontFamily: 'var(--font-mono)', color: '#a1a1aa', background: '#050508', padding: '8px', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '3px', minHeight: '36px', lineHeight: '1.4', textAlign: 'left' }}>
+              💬 {seedHeadline}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '5px' }}>
+              <button 
+                onClick={() => { setStealthMode(true); soundSynthesizer.playKeyClick(); }}
+                style={{ background: 'transparent', border: '1px solid #ff6600', color: '#ff6600', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', padding: '8px', cursor: 'pointer', borderRadius: '3px' }}
+                title="Blur everything out with a stealth founder lock overlay"
+              >
+                🕵️ Stealth Mode (#17)
+              </button>
+
+              <button 
+                onClick={spawnXpDialog}
+                style={{ background: 'transparent', border: '1px solid #0054e3', color: '#38bdf8', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', padding: '8px', cursor: 'pointer', borderRadius: '3px' }}
+                title="Trigger cascaded classic Windows error dialog popups"
+              >
+                💥 Optimize Score (XP Error)
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Persistent Session / Telemetry Status (Touch Grass, #1) */}
+      <div className="glass-panel" style={{ padding: '20px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 0', gap: '20px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left' }}>
+          <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: '#71717a', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            🌾 touch grass protocol telemetry status
+          </span>
+          <p style={{ fontSize: '0.75rem', color: '#e4e4e7', fontFamily: 'var(--font-mono)', margin: 0 }}>
+            Total user session duration: <span style={{ color: 'var(--theme-primary)', fontWeight: 'bold' }}>{touchGrassTimer}s</span>. Vegetation checked: <span style={{ color: touchGrassTimer >= 60 ? '#10b981' : '#ef4444', fontWeight: 'bold' }}>{touchGrassTimer >= 60 ? 'LOCATED (Badge Unlocked)' : 'None found'}</span>.
+          </p>
+        </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
+          <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: '#71717a', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            lifetime parsing index
+          </span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 'bold', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
+            {parseCount} RESUMES DEVASTATED
+          </span>
+        </div>
+      </div>
+
       {/* EXPOSING THE PARSER ENGINE - RAW DEBUG UTILITY (z2l9aa) */}
       <div className="raw-debug-panel asymmetric-offset-3">
         <div className="raw-debug-header">
@@ -665,6 +955,55 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
           </span>
         </div>
         <RoastCard score={score} generalRoast={verdictTitle.replace(/"/g, '')} personality={personality} seed={analysis.seed} />
+      </div>
+
+      {/* Draggable XP Error Dialogs (Internet Culture, #48) */}
+      {xpDialogs.map((d, index) => (
+        <div 
+          key={d.id} 
+          className="xp-dialog-window"
+          style={{ 
+            left: `${d.x + index * 15}px`, 
+            top: `${d.y + index * 15}px`,
+            zIndex: 10001 + index 
+          }}
+        >
+          <div className="xp-dialog-header">
+            <span className="xp-dialog-title">{d.title}</span>
+            <button className="xp-dialog-close-btn" onClick={() => closeXpDialog(d.id)}>×</button>
+          </div>
+          <div className="xp-dialog-body">
+            <div className="xp-dialog-icon">⚠️</div>
+            <div className="xp-dialog-content">
+              {d.text}
+            </div>
+          </div>
+          <div className="xp-dialog-footer">
+            <button className="xp-dialog-ok-btn" onClick={() => closeXpDialog(d.id)}>OK</button>
+          </div>
+        </div>
+      ))}
+
+      {/* Ghosted Badge Card (Recruiter Horror, #11) */}
+      <div style={{
+        margin: '30px auto 0 auto',
+        padding: '12px',
+        maxWidth: '300px',
+        border: '1px solid rgba(255,255,255,0.04)',
+        background: 'rgba(255,255,255,0.01)',
+        borderRadius: '4px',
+        fontSize: '0.65rem',
+        fontFamily: 'var(--font-mono)',
+        color: '#71717a',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px'
+      }}>
+        <span>👻 STATUS:</span>
+        <span style={{ color: '#ef4444', fontWeight: 'bold', animation: 'pulseTyping 1.8s infinite' }}>
+          "We'll get back to you."
+        </span>
       </div>
 
     </div>

@@ -46,6 +46,26 @@ export default function App() {
   const [is314AM, setIs314AM] = useState(false);
   const [recruiterTyping, setRecruiterTyping] = useState(false);
 
+  // 12 Selected Easter Egg States
+  const [hackerMode, setHackerMode] = useState(false);
+  const [stealthMode, setStealthMode] = useState(false);
+  const [jitterActive, setJitterActive] = useState(false);
+  const [touchGrassTimer, setTouchGrassTimer] = useState(parseInt(localStorage.getItem('touch_grass_seconds') || '0', 10));
+  const [parseCount, setParseCount] = useState(parseInt(localStorage.getItem('resume_parse_count') || '0', 10));
+  const [showCreatorLetter, setShowCreatorLetter] = useState(false);
+
+  // Touch Grass protocol tracking (Developer Culture, #1)
+  useEffect(() => {
+    const grassTimer = setInterval(() => {
+      setTouchGrassTimer(prev => {
+        const next = prev + 1;
+        localStorage.setItem('touch_grass_seconds', next.toString());
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(grassTimer);
+  }, []);
+
   // Track time on site & handle 3:14 AM check (Rule 2 & Rule 4)
   useEffect(() => {
     const timer = setInterval(() => {
@@ -335,6 +355,11 @@ export default function App() {
     const results = analyzeResume(resumeText, selectedPersonality);
     setAnalysis(results);
     setAppState('ANALYZED');
+    setParseCount(p => {
+      const next = p + 1;
+      localStorage.setItem('resume_parse_count', next.toString());
+      return next;
+    });
   }, [resumeText, selectedPersonality]);
 
   const handleReset = () => {
@@ -373,20 +398,44 @@ export default function App() {
       setConsoleInput('');
       
       setTimeout(() => {
-        if (cmd === 'override_hiring_decision()') {
+        const lowerCmd = cmd.toLowerCase();
+        if (lowerCmd === 'override_hiring_decision()') {
           soundSynthesizer.playGlitch();
           setConsoleLines(prev => [...prev, 'ACCESS DENIED']);
-        } else if (cmd === 'help') {
-          setConsoleLines(prev => [...prev, 'Available commands: help, clear, override_hiring_decision(), sudo hire-me']);
-        } else if (cmd === 'clear') {
+        } else if (lowerCmd === 'help') {
+          setConsoleLines(prev => [
+            ...prev,
+            'Available commands: help, clear, override_hiring_decision(), sudo hire-me, whoami, become-ceo, hire-me-now, reveal-truth, deploy-production, become-senior, sudo touch-grass, hacker'
+          ]);
+        } else if (lowerCmd === 'clear') {
           setConsoleLines([]);
-        } else if (cmd === 'sudo hire-me') {
+        } else if (lowerCmd === 'sudo hire-me') {
           soundSynthesizer.playUnlock();
           setConsoleLines(prev => [...prev, 'SUCCESS: Sudo authorization granted. Igniting uploader...']);
           setTimeout(() => {
             setShowDebugConsole(false);
             startAnalysis('sudo hire-me');
           }, 1500);
+        } else if (lowerCmd === 'whoami') {
+          setConsoleLines(prev => [...prev, 'Tutorial Warrior (Grade 3).']);
+        } else if (lowerCmd === 'become-ceo') {
+          setConsoleLines(prev => [...prev, 'ERROR: Access denied. Rejection letter dispatched to candidate\'s mailbox in 0.3s.']);
+        } else if (lowerCmd === 'hire-me-now') {
+          soundSynthesizer.playGlitch();
+          setConsoleLines(prev => [...prev, 'Roast Master laughs hysterically. System volume peaked.']);
+        } else if (lowerCmd === 'reveal-truth') {
+          setConsoleLines(prev => [...prev, 'Actual weakness detected: Obsessed with pixel margins, allergic to meetings.']);
+        } else if (lowerCmd === 'deploy-production') {
+          soundSynthesizer.playBassDrop();
+          setConsoleLines(prev => [...prev, '[EXPLOSION] Production environment collapsed. Reverting to localhost residency.']);
+        } else if (lowerCmd === 'become-senior') {
+          setConsoleLines(prev => [...prev, 'ERROR: 10 years of experience required. You have 3 Todo list projects. Compilation failed.']);
+        } else if (lowerCmd === 'sudo touch-grass') {
+          setConsoleLines(prev => [...prev, 'sudo: touch-grass: permission denied. Candidate is too allergic to sunlight.']);
+        } else if (lowerCmd === 'hacker') {
+          setHackerMode(prev => !prev);
+          soundSynthesizer.playGlitch();
+          setConsoleLines(prev => [...prev, 'Hacker mode toggled. Enjoy the green phosphor glow.']);
         } else {
           setConsoleLines(prev => [...prev, `Unknown command: ${cmd}`]);
         }
@@ -410,7 +459,7 @@ export default function App() {
   };
 
   return (
-    <div className={`app-wrapper ${selectedPersonality.themeClass} ${mentalBreakdown || is314AM ? 'mental-breakdown-active sanity-overflow-mode' : ''} ${analysis?.isGenuinelyGood ? 'genuinely-good-active' : ''}`}>
+    <div className={`app-wrapper ${selectedPersonality.themeClass} ${mentalBreakdown || is314AM ? 'mental-breakdown-active sanity-overflow-mode' : ''} ${analysis?.isGenuinelyGood ? 'genuinely-good-active' : ''} ${hackerMode ? 'hacker-mode-active' : ''} ${jitterActive ? 'jitter-active' : ''}`}>
       <div className="cyber-grid" />
       <div className="scanlines-overlay" />
       <div className="noise-grain-overlay" />
@@ -441,7 +490,22 @@ export default function App() {
         </ul>
 
         <div className="header-right">
-          <div className="caffeine-tracker-badge" onClick={() => { setCaffeineCount(c => c + 1); soundSynthesizer.playKeyClick(); }} title="Click to track a cup of 3am coffee">
+          <div 
+            className="caffeine-tracker-badge" 
+            onClick={() => { 
+              const nextVal = caffeineCount + 1;
+              setCaffeineCount(nextVal); 
+              soundSynthesizer.playKeyClick(); 
+              if (nextVal >= 25) {
+                setJitterActive(true);
+                soundSynthesizer.playGlitch();
+              }
+              if (nextVal === 25) {
+                setShowCreatorLetter(true);
+              }
+            }} 
+            title="Click to track a cup of 3am coffee. Clicking 25 times triggers extreme jitters & creator note."
+          >
             ☕ {caffeineCount} CUPS
           </div>
 
@@ -477,6 +541,7 @@ export default function App() {
       </div>
 
       {/* STATE MACHINE VIEWS */}
+      <div className={stealthMode ? 'stealth-blur-active' : ''}>
       <AnimatePresence mode="wait">
         {appState === 'UPLOADING' && (
           <motion.main
@@ -674,6 +739,10 @@ export default function App() {
               resumeText={resumeText}
               personality={selectedPersonality}
               onReset={handleReset}
+              stealthMode={stealthMode}
+              setStealthMode={setStealthMode}
+              touchGrassTimer={touchGrassTimer}
+              parseCount={parseCount}
             />
           </motion.div>
         )}
@@ -691,6 +760,61 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+
+      {/* Stealth Mode Overlay (Startup Founder Delusion, #17) */}
+      {stealthMode && (
+        <div className="stealth-mode-overlay">
+          <div className="stealth-mode-title">🚨 STEALTH MODE ACTIVE 🚨</div>
+          <div className="stealth-mode-desc">
+            This project is currently operating in extreme stealth mode. No code, no users, no revenue, but a massive valuation expectation.
+          </div>
+          <button className="stealth-reveal-btn" onClick={() => { setStealthMode(false); soundSynthesizer.playKeyClick(); }}>
+            [ Reveal Truth (Exit Stealth) ]
+          </button>
+        </div>
+      )}
+
+      {/* Sleep-Deprived Creator Note (Resume Roaster Lore, #64) */}
+      {showCreatorLetter && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: '#09090b',
+          border: '1px solid #f59e0b',
+          boxShadow: '0 0 30px rgba(245,158,11,0.3)',
+          padding: '30px',
+          borderRadius: '8px',
+          zIndex: 10002,
+          maxWidth: '500px',
+          fontFamily: 'var(--font-mono)',
+          lineHeight: '1.6',
+          color: '#e4e4e7',
+          textAlign: 'left'
+        }}>
+          <div style={{ color: '#f59e0b', fontSize: '0.8rem', fontWeight: 'bold', borderBottom: '1px dashed #f59e0b', paddingBottom: '8px', marginBottom: '16px' }}>
+            💌 A SLEEP-DEPRIVED CREATOR NOTE (Rishi Sharma)
+          </div>
+          <p style={{ margin: '0 0 12px 0', fontSize: '0.8rem' }}>
+            Hey, if you clicked this coffee tracking button 25 times at 3 AM, you're probably as sleep-deprived as I was when coding these Procedural Web Audio oscillators and margins.
+          </p>
+          <p style={{ margin: '0 0 12px 0', fontSize: '0.8rem' }}>
+            Thank you for checking out this little project. It was handcrafted with love, caffeine, and zero AI UI generation templates.
+          </p>
+          <p style={{ margin: '0 0 20px 0', fontSize: '0.8rem', fontStyle: 'italic', color: '#a1a1aa' }}>
+            "Most wanted shortcuts. A few kept building. Keep building."
+          </p>
+          <button 
+            className="stealth-reveal-btn" 
+            style={{ background: '#f59e0b', border: 'none', color: '#000', width: '100%' }}
+            onClick={() => { setShowCreatorLetter(false); setJitterActive(false); setCaffeineCount(8); soundSynthesizer.playKeyClick(); }}
+          >
+            [ Touch Grass / Reset Caffeine ]
+          </button>
+        </div>
+      )}
 
       {/* 2. Fake Memory Leak Telemetry Widget (Rule 2) */}
       <div className="sys-telemetry-widget" style={{
