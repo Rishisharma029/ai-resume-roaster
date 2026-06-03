@@ -99,6 +99,7 @@ export default function ScanningView({ personality, onComplete }) {
     ];
 
     let currentGazeIndex = 0;
+    let gazeTimeoutId = null;
     
     const moveGaze = () => {
       if (currentGazeIndex < gazePositions.length) {
@@ -116,14 +117,14 @@ export default function ScanningView({ personality, onComplete }) {
         soundSynthesizer.playHover();
         currentGazeIndex++;
         
-        setTimeout(moveGaze, point.duration);
+        gazeTimeoutId = setTimeout(moveGaze, point.duration);
       }
     };
 
-    const firstMove = setTimeout(moveGaze, 400);
+    gazeTimeoutId = setTimeout(moveGaze, 400);
 
     return () => {
-      clearTimeout(firstMove);
+      clearTimeout(gazeTimeoutId);
     };
   }, []);
 
