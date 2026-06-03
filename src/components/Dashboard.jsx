@@ -106,7 +106,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
 
       {/* SECTION 1: OFFICIAL VERDICT CARD (Screenshot 1) */}
       <div 
-        className="glass-panel" 
+        className="glass-panel asymmetric-offset-1" 
         style={{ 
           padding: '40px', 
           border: `2px solid ${primaryColor}`,
@@ -226,7 +226,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
 
       {/* NEW SECTION: SWEAT DIAGNOSTICS & ARCHETYPE CLASSIFICATION */}
       <div 
-        className="glass-panel sweat-diagnostics-panel" 
+        className="glass-panel sweat-diagnostics-panel asymmetric-offset-2" 
       >
         {/* Left Side: Archetype Classification */}
         <div className="archetype-classification-box">
@@ -348,7 +348,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
       <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '30px' }}>
         
         {/* Career Lore */}
-        <div className="glass-panel" style={{ padding: '30px', display: 'flex', flexDirection: 'column' }}>
+        <div className="glass-panel asymmetric-offset-1" style={{ padding: '30px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '24px' }}>
             <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: primaryColor, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Flame size={12} /> YOUR CAREER LORE
@@ -373,7 +373,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
         </div>
 
         {/* Achievements */}
-        <div className="glass-panel" style={{ padding: '30px' }}>
+        <div className="glass-panel asymmetric-offset-2" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '20px' }}>
             <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: primaryColor, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Trophy size={12} /> ACHIEVEMENTS UNLOCKED
@@ -413,7 +413,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
       </div>
 
       {/* SECTION 3: BATTLE MODE (Screenshot 4) */}
-      <div className="glass-panel" style={{ padding: '30px' }}>
+      <div className="glass-panel asymmetric-offset-3" style={{ padding: '30px' }}>
         <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '24px' }}>
           <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: primaryColor, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Award size={12} /> BATTLE MODE REWRITES
@@ -456,7 +456,7 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
       </div>
 
       {/* SECTION 4: RECOVERY PROTOCOLS (Screenshot 2) */}
-      <div className="glass-panel" style={{ padding: '30px' }}>
+      <div className="glass-panel asymmetric-offset-1" style={{ padding: '30px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '24px' }}>
           <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', color: primaryColor, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Sparkles size={12} /> RECOVERY PROTOCOL
@@ -485,6 +485,56 @@ export default function Dashboard({ analysis, resumeText, personality, onReset }
               </p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* EXPOSING THE PARSER ENGINE - RAW DEBUG UTILITY (z2l9aa) */}
+      <div className="raw-debug-panel asymmetric-offset-3">
+        <div className="raw-debug-header">
+          <span>⚙️ [EXPOSE_ENGINE_V5.0] // RAW PARSER OUTPUT LOGS</span>
+          <span style={{ color: 'var(--theme-primary)' }}>ONLINE / DETERMINISTIC</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">seed:</span> {analysis.seed || "N/A"} (cyrb53)
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">archetype_detected:</span> {analysis.archetype?.badge || "N/A"}
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">contradiction_checks:</span> {
+              analysis.contradictions && analysis.contradictions.length > 0 
+                ? analysis.contradictions.map(c => `[CONFLICT: ${c.type}] "${c.phrase}"`).join(', ') 
+                : "zero logical overrides triggered"
+            }
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">detected_angles:</span> {
+              analysis.detectedAngles && analysis.detectedAngles.length > 0 
+                ? analysis.detectedAngles.join(', ') 
+                : "none"
+            }
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">skills_parsed:</span> {
+              analysis.foundSkills && analysis.foundSkills.length > 0 
+                ? analysis.foundSkills.join(', ') 
+                : "none"
+            }
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">tutorials_flagged:</span> {
+              analysis.foundTutorials && analysis.foundTutorials.length > 0 
+                ? analysis.foundTutorials.join(', ') 
+                : "none"
+            }
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">cringe_penalties:</span> +{analysis.redFlagsCount * 6} points to deludometer
+          </div>
+          <div className="raw-debug-log-line">
+            <span className="raw-debug-log-prompt">burnout_log:</span> confidence.js loaded successfully. memory leak detected in sanity_buffer.
+          </div>
         </div>
       </div>
 

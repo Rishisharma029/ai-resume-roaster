@@ -16,6 +16,8 @@ export default function App() {
   const [resumeText, setResumeText] = useState('');
   const [analysis, setAnalysis] = useState(null);
   const [muted, setMuted] = useState(soundSynthesizer.getMuted());
+  const [caffeineCount, setCaffeineCount] = useState(8);
+  const [mentalBreakdown, setMentalBreakdown] = useState(false);
   
   // Custom scrolling marquee phrases
   const tickerItems = [
@@ -75,9 +77,10 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
   };
 
   return (
-    <div className={`app-wrapper ${selectedPersonality.themeClass}`}>
+    <div className={`app-wrapper ${selectedPersonality.themeClass} ${mentalBreakdown ? 'mental-breakdown-active' : ''}`}>
       <div className="cyber-grid" />
       <div className="scanlines-overlay" />
+      <div className="noise-grain-overlay" />
       
       {/* Dynamic Canvas Particles */}
       <ParticleBackground themeId={selectedPersonality.id} />
@@ -105,6 +108,23 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
         </ul>
 
         <div className="header-right">
+          <div className="caffeine-tracker-badge" onClick={() => { setCaffeineCount(c => c + 1); soundSynthesizer.playKeyClick(); }} title="Click to track a cup of 3am coffee">
+            ☕ {caffeineCount} CUPS
+          </div>
+
+          <button 
+            onClick={() => { setMentalBreakdown(prev => !prev); soundSynthesizer.playBassDrop(); }} 
+            className="mute-btn" 
+            title="Toggle Mental Breakdown Mode (Caution: Unstable CRT Screen Shake)"
+            style={{ 
+              color: mentalBreakdown ? 'var(--theme-primary)' : '#a1a1aa', 
+              borderColor: mentalBreakdown ? 'var(--theme-primary)' : 'rgba(255,255,255,0.08)',
+              background: mentalBreakdown ? 'rgba(var(--theme-primary-rgb), 0.1)' : 'transparent'
+            }}
+          >
+            💥
+          </button>
+
           <div className="status-badge">
             <div className="status-dot" />
             {selectedPersonality.name}
@@ -115,6 +135,13 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
           </button>
         </div>
       </header>
+
+      {/* Sarcastic human-made metadata banner */}
+      <div className="burnout-banner">
+        <span>⚙️ BUILD SURVIVED NPM DEPENDENCY WARFARE</span>
+        <span>LAST DEPLOYED DURING EMOTIONAL COLLAPSE AT 3:14 AM</span>
+        <span>CONFIDENCE.JS COMPILING... [OK]</span>
+      </div>
 
       {/* STATE MACHINE VIEWS */}
       <AnimatePresence mode="wait">
@@ -144,18 +171,32 @@ Skills: Javascript, React, CSS, HTML. Deployed to localhost.`;
                 </p>
               </div>
 
-              <div className="hero-right-card">
-                <div className="expect-title">
-                  <Flame size={12} /> WHAT TO EXPECT
+              <div className="hero-right-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <div className="expect-title">
+                    <Flame size={12} /> WHAT TO EXPECT
+                  </div>
+                  <ul className="expect-list">
+                    <li className="expect-item">verdict + skill bluffs</li>
+                    <li className="expect-item">survival score</li>
+                    <li className="expect-item">career lore</li>
+                    <li className="expect-item">achievements unlocked</li>
+                    <li className="expect-item">recovery protocol</li>
+                    <li className="expect-item">shareable roast card</li>
+                  </ul>
                 </div>
-                <ul className="expect-list">
-                  <li className="expect-item">verdict + skill bluffs</li>
-                  <li className="expect-item">survival score</li>
-                  <li className="expect-item">career lore</li>
-                  <li className="expect-item">achievements unlocked</li>
-                  <li className="expect-item">recovery protocol</li>
-                  <li className="expect-item">shareable roast card</li>
-                </ul>
+                <div style={{ borderTop: '1px dashed rgba(255,255,255,0.08)', paddingTop: '15px' }}>
+                  <div className="expect-title" style={{ color: '#71717a', fontSize: '0.6rem' }}>
+                    📂 VERSION EVOLUTION
+                  </div>
+                  <ul className="expect-list" style={{ gap: '6px', fontSize: '0.7rem', color: '#52525b', fontFamily: 'var(--font-mono)', listStyle: 'none' }}>
+                    <li>v1.0 — random insults</li>
+                    <li>v2.0 — evidence analysis engine</li>
+                    <li>v3.0 — psychological diagnostics</li>
+                    <li>v4.0 — human recovery protocols</li>
+                    <li>v5.0 — recruiter ptsd mode [CURRENT]</li>
+                  </ul>
+                </div>
               </div>
             </section>
 

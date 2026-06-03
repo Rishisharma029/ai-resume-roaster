@@ -864,3 +864,144 @@ body {
     padding-bottom: 30px;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   VISUAL HUMANIZATION STYLES (z2l9aa)
+   Handcrafted, sleep-deprived imperfections & retro overlays
+   ───────────────────────────────────────────────────────────── */
+
+/* Handcrafted spacing & rotation asymmetry */
+.asymmetric-offset-1 {
+  transform: translateY(3px) rotate(0.15deg) !important;
+}
+
+.asymmetric-offset-2 {
+  transform: translateY(-4px) rotate(-0.3deg) !important;
+}
+
+.asymmetric-offset-3 {
+  transform: translateY(2px) rotate(0.2deg) !important;
+}
+
+.asymmetric-heading {
+  padding-left: 29px !important;
+  margin-bottom: 23px !important;
+}
+
+.asymmetric-card-spacing {
+  margin-top: 31px !important;
+}
+
+/* CRT Screen Shake / Flicker for Mental Breakdown Mode */
+.mental-breakdown-active {
+  animation: crtShake 0.4s infinite, crtFlicker 0.15s infinite !important;
+  filter: saturate(1.8) contrast(1.4) !important;
+}
+
+@keyframes crtShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-1px, 2px) rotate(-0.1deg); }
+  20% { transform: translate(2px, -1px) rotate(0.1deg); }
+  30% { transform: translate(-2px, -2px) rotate(0deg); }
+  40% { transform: translate(1px, 3px) rotate(0.2deg); }
+  50% { transform: translate(-1px, -1px) rotate(-0.2deg); }
+  60% { transform: translate(3px, 1px) rotate(0.1deg); }
+  70% { transform: translate(-2px, 2px) rotate(0deg); }
+  80% { transform: translate(1px, -3px) rotate(-0.1deg); }
+  90% { transform: translate(-3px, 1px) rotate(0.1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.98; }
+  50% { opacity: 0.95; }
+  100% { opacity: 0.98; }
+}
+
+/* Noise overlay */
+.noise-grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 998;
+}
+
+/* Expose Raw Debug Output Panel styling */
+.raw-debug-panel {
+  background: #030305 !important;
+  border: 1px solid rgba(255, 0, 85, 0.2) !important;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  padding: 16px 20px;
+  margin-top: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
+
+.raw-debug-header {
+  font-size: 0.65rem;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.raw-debug-log-line {
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: #38bdf8; /* terminal cyan */
+  word-break: break-all;
+}
+
+.raw-debug-log-prompt {
+  color: #ff0055;
+  margin-right: 8px;
+}
+
+/* Caffeine Counter styling */
+.caffeine-tracker-badge {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 0.6rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.caffeine-tracker-badge:hover {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+/* Sarcastic deployment notes banner styling */
+.burnout-banner {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: #fca5a5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 10px auto;
+  width: calc(100% - 80px);
+}
+

@@ -79,15 +79,15 @@ export default function ScanningView({ personality, onComplete }) {
     };
   }, [personality, onComplete]);
 
-  // Recruiter Eye Gaze jump movements
+  // Recruiter Eye Gaze jump movements (humanized)
   useEffect(() => {
     const gazePositions = [
-      { x: 30, y: 25, label: "Name checked", duration: 800 },
-      { x: 75, y: 15, label: "Title evaluated: 'Junior' detected", duration: 900 },
-      { x: 45, y: 55, label: "Buzzword cluster hit: 'Innovative'", duration: 1100 },
-      { x: 20, y: 80, label: "Todo list project: Recruiter sighed", duration: 800 },
-      { x: 85, y: 90, label: "Checking deployed links: None found!", duration: 1000 },
-      { x: 50, y: 65, label: "Attention Span Lost. Refused to read.", duration: 1400 }
+      { x: 30, y: 25, label: "Name checked: candidate has 3 middle names", duration: 800 },
+      { x: 75, y: 15, label: "Title evaluated: 'Junior' detected — automatic discount applied", duration: 900 },
+      { x: 45, y: 55, label: "Buzzword cluster hit: 'synergy' is a trigger word", duration: 1100 },
+      { x: 20, y: 80, label: "Todo list project: Recruiter sighed and opened LinkedIn", duration: 800 },
+      { x: 85, y: 90, label: "Checking deployed links: Localhost residency detected", duration: 1000 },
+      { x: 50, y: 65, label: "Attention Span Lost. Redirecting to coffee maker.", duration: 1400 }
     ];
 
     let currentGazeIndex = 0;

@@ -1346,17 +1346,16 @@ export function analyzeResume(resumeText, personality) {
   } else if (sweatIndex > 65) sweatIndexJustification = "High because of high buzzword density (synergy talk with empty repos).";
   else if (sweatIndex > 30) sweatIndexJustification = "Elevated due to framework stacking without clear outcomes.";
 
-  let linkedinDelusionJustification = "Low because professional jargon and self-aggrandizing clichés are kept to a minimum.";
-  if (linkedinDelusion === 'CRITICAL') linkedinDelusionJustification = 'High because resume says "visionary" with the confidence of someone who just discovered Flexbox.';
-  else if (linkedinDelusion === 'HIGH') linkedinDelusionJustification = "High because summary sounds like LinkedIn autocomplete clichés.";
-  else if (linkedinDelusion === 'ELEVATED') linkedinDelusionJustification = "Elevated due to overused clichés like 'results-driven individual' or 'team player'.";
+  let linkedinDelusionJustification = "Low because professional jargon is kept to a minimum.";
+  if (linkedinDelusion === 'CRITICAL') linkedinDelusionJustification = "LinkedIn final boss energy.";
+  else if (linkedinDelusion === 'HIGH') linkedinDelusionJustification = "LinkedIn final boss energy.";
+  else if (linkedinDelusion === 'ELEVATED') linkedinDelusionJustification = "LinkedIn final boss energy.";
 
   let tutorialDependencyJustification = "Low because no generic tutorial template projects or clones were detected.";
   if (specificObservations.includes("weather app addiction") || specificObservations.includes("calculator project recurrence")) {
-    const clonesStr = specificObservations.filter(o => o.includes("addiction") || o.includes("recurrence") || o.includes("clones")).join(" & ");
-    tutorialDependencyJustification = `High because projects are beginner clones (${clonesStr || "weather/calculator clones"}).`;
-  } else if (tutorialCount > 0) tutorialDependencyJustification = "High because projects are beginner clones (todo lists and boilerplate setups).";
-  else if (tutorialDependency > 40) tutorialDependencyJustification = "Elevated due to generic bootcamper template clones with no custom logic.";
+    tutorialDependencyJustification = "This repo smells like YouTube autoplay.";
+  } else if (tutorialCount > 0) tutorialDependencyJustification = "This repo smells like YouTube autoplay.";
+  else if (tutorialDependency > 40) tutorialDependencyJustification = "This repo smells like YouTube autoplay.";
 
   let productionExposureJustification = "High because live URLs and active public repository links are verifiable.";
   if (productionExposure < 35) {
@@ -1444,6 +1443,10 @@ export function analyzeResume(resumeText, personality) {
     tutorialDependencyJustification,
     productionExposureJustification,
     founderHallucinationJustification,
+    contradictions,
+    detectedAngles,
+    foundSkills,
+    foundTutorials,
     metrics: {
       buzzwordDensity: Math.round(buzzwordDensity),
       tutorialDependency: Math.min(tutorialCount * 25, 100),
