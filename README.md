@@ -14,8 +14,12 @@
 </p>
 
 <p align="center">
+  <a href="https://rishisharma029.github.io/ai-resume-roaster/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀%20LIVE%20DEMO-GitHub%20Pages-ff0055?style=for-the-badge&labelColor=07070a" alt="Live Demo" />
+  </a>
+  &nbsp;
   <a href="https://github.com/Rishisharma029/ai-resume-roaster" target="_blank">
-    <img src="https://img.shields.io/badge/🚀%20VIEW%20ON%20GITHUB-Rishisharma029%2Fai--resume--roaster-ff0055?style=for-the-badge&labelColor=07070a&logo=github" alt="GitHub Demo" />
+    <img src="https://img.shields.io/badge/📦%20GitHub-Rishisharma029-white?style=for-the-badge&labelColor=07070a&logo=github" alt="GitHub" />
   </a>
 </p>
 
@@ -33,11 +37,11 @@ The roast is **statistically unique every time**. Fragment-based sentence assemb
 
 ---
 
-## 🚀 GitHub Repository
+## 🚀 Live Demo
 
-> **[https://github.com/Rishisharma029/ai-resume-roaster](https://github.com/Rishisharma029/ai-resume-roaster)**
+> **[https://rishisharma029.github.io/ai-resume-roaster/](https://rishisharma029.github.io/ai-resume-roaster/)**
 
-Try these sample presets available inside the app after cloning:
+Try these sample presets available inside the app:
 - `Tutorial Survivor` — the React clone king
 - `Fake AI Engineer` — the prompt wrapper calling himself ML Architect
 - `LinkedIn Influencer` — pure buzzword energy, zero code
@@ -312,5 +316,5 @@ Regrets:                                  ░░░░░░░░░░░░�
   <strong>Built with ☕ caffeine · 🌙 sleepless nights · 💀 resentment · and a deep, genuine love for honest feedback</strong>
   <br/><br/>
   <a href="https://github.com/Rishisharma029/ai-resume-roaster">⭐ Star on GitHub</a> · 
-  <a href="https://github.com/Rishisharma029/ai-resume-roaster">📦 View the Repo</a>
+  <a href="https://rishisharma029.github.io/ai-resume-roaster/">🚀 Try the Demo</a>
 </p>
