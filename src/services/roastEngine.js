@@ -1252,16 +1252,17 @@ function generateBattleItems(text, rand, sweatInfo) {
 
 
 
+
 // ============================================================
 //  EXPANDED ROAST POOLS — POLISHED COMEDIC ADDITIONS
 // ============================================================
 
 const openingsAdd = {
   staff_engineer: [
-    "Your resume didn't just get rejected; our security team flagged it as a biological threat to my remaining brain cells.",
-    "If tech debt paid interest, this resume would be legally classified as a money-printing machine for the bank.",
-    "I've seen legacy code written in the 70s by drunk mainframe operators that had more self-awareness and better structure than this.",
+    "I ran your resume through our compiler and it threw an OutofMemoryError just trying to parse your objectives.",
+    "If this resume was a pull request, I would close it, delete the branch, block your GitHub, and report you to HR for emotional harassment.",
     "Your experience section has the load-bearing strength of wet cotton candy in a monsoon.",
+    "I've seen legacy code written in the 70s by drunk mainframe operators that had more self-awareness and better structure than this.",
     "I sent this resume to my therapist to explain why I have trust issues with junior developers."
   ],
   faang_gatekeeper: [
