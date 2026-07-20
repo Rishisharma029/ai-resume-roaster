@@ -1251,59 +1251,60 @@ function generateBattleItems(text, rand, sweatInfo) {
 
 
 
+
 // ============================================================
-//  EXPANDED ROAST POOLS — POLISHED 5-8 HIGH-QUALITY ADDITIONS
+//  EXPANDED ROAST POOLS — POLISHED COMEDIC ADDITIONS
 // ============================================================
 
 const openingsAdd = {
   staff_engineer: [
-    "Your architecture section has the load-bearing integrity of a single-ply tissue paper held together by inline comments begging god for mercy.",
-    "Looking at this Git commit history, your main development workflow is committing directly to production to bypass a failing lint step you didn't understand.",
-    "If tech debt paid interest, this resume would fund a small European nation's sovereign wealth pool.",
-    "You've listed 12 frameworks but your actual coding style is copy-pasting Stack Overflow threads until the red squiggly lines go away.",
-    "I've reviewed legacy code written by disgruntled Cobol developers in 1984 that had more optimism and structure than this."
+    "Your resume didn't just get rejected; our security team flagged it as a biological threat to my remaining brain cells.",
+    "If tech debt paid interest, this resume would be legally classified as a money-printing machine for the bank.",
+    "I've seen legacy code written in the 70s by drunk mainframe operators that had more self-awareness and better structure than this.",
+    "Your experience section has the load-bearing strength of wet cotton candy in a monsoon.",
+    "I sent this resume to my therapist to explain why I have trust issues with junior developers."
   ],
   faang_gatekeeper: [
-    "This resume passed the automated keyword scanner and disappointed the human reviewer in record-breaking time.",
-    "Your experience section claims to scale systems, but your longest-running app was a Vercel preview page with two concurrent users.",
-    "You list system design experience with the confidence of someone who has only ever drawn boxes on a Miro board.",
-    "This document reads like a Wikipedia reading list of modern buzzwords compiled by a very ambitious marketing intern.",
-    "I could teach you more in one whiteboard session than your project history suggests you have learned in the last two years."
+    "I showed this resume to our AI recruiter and it immediately uninstalled itself to avoid screening you.",
+    "You list 'scale' on here, but the only thing you've ever scaled is your weight during lock-downs.",
+    "Your career history looks like a series of side quests that you abandoned the moment you had to write a single line of CSS.",
+    "I've seen LeetCode solutions written by actual bots that had more personality and less boilerplate than this.",
+    "You want a Google salary for tutorial-level projects. The math is not mathing, my friend."
   ],
   devops_veteran: [
-    "I have survived seventeen production outages. Your resume has survived exactly zero, and it shows.",
-    "Your deployment history is an empty void. Not a strategic one—just a complete lack of execution.",
-    "Docker is in your skills list, yet there is zero mention of image layers, caching, or security profiles.",
-    "I can identify a developer who has never had a Friday 5pm deploy go wrong within three lines of a resume. You are that developer.",
-    "The infrastructure section of your resume is a wish list of tools you have flown over on a plane."
+    "Your deploy pipeline is so slow and broken, I'm pretty sure it relies on Carrier Pigeons to transfer the zip files.",
+    "I printed your resume and it immediately caught fire, which is the most stable deployment you've had all year.",
+    "Looking at your deployment history, I can tell you think CI/CD stands for 'Constant Interruptions and Catastrophic Disasters'.",
+    "I ran this resume through our security scanner and it flagged your skill section as a threat to global stability.",
+    "Your experience section has the load-bearing capability of a wet napkin in a hurricane."
   ],
   oss_maintainer: [
-    "I have closed more issues than you have opened pull requests. We both know how this ends.",
-    "Your GitHub contribution graph tells a story of green squares that represent README formatting edits.",
-    "Typo fixes in someone else's markdown files do not constitute open-source contribution.",
-    "A repository with one commit and a 900-line README is not a project — it is a mood board.",
-    "I can review a codebase in seconds. Yours tells me you have written code for an audience of one."
+    "Your open-source contributions are just you correcting spelling mistakes in other people's READMEs to look busy.",
+    "I took one look at your public repositories and my linter started crying.",
+    "If repository stars were currency, your projects would be filing for bankruptcy.",
+    "Your commit messages are a diary of a developer slowly losing their sanity to a compiler.",
+    "I looked at your code and it looks like a collaboration between a cat walking on a keyboard and a very bad bot."
   ],
   exhausted_recruiter: [
-    "Dear applicant, thank you for participating in our automated screening. The results are not in your favor.",
-    "Your resume contains seventeen buzzwords and zero quantified outcomes. The algorithm noticed, and so did I.",
-    "You have described your professional history with the specificity of someone writing a horoscope.",
-    "Passive voice in a resume bullet is a recruiter's way of knowing you did not actually own the outcome.",
-    "The ratio of adjectives to accomplishments in this document is not something I expected to encounter today."
+    "I've swiped left on dating profiles with fewer red flags and more honesty than this resume.",
+    "Your objective statement says you're a 'disruptive innovator' but your history says you're a 'professional seat-warmer'.",
+    "Reading your experience section felt like trying to find the recipe on a food blog—just endless filler.",
+    "You listed 'strong communication' but your resume is formatted like a corrupted CSV export.",
+    "I showed your resume to the hiring manager and he asked if we were hiring for a comedy show."
   ],
   rust_elitist: [
-    "Your code has a garbage collector doing the one job you should be doing yourself.",
-    "I audited your project directory and found exactly zero evidence of systems-level thinking.",
-    "You have never written code that required you to understand what memory actually is.",
-    "The safety of your runtime environment is inversely proportional to the depth of your understanding.",
-    "You listed 'systems programmer' on a resume containing exclusively JavaScript. This is a category error."
+    "You write JavaScript. That's it. That's the roast. May the garbage collector have mercy on your soul.",
+    "This resume is unsafe at compile time, runtime, and reading time.",
+    "You list C++ because you printed 'Hello World' in a lab, but a single pointer would send you into a panic attack.",
+    "Your dependency tree is so heavy it has its own gravitational pull.",
+    "I audited your github and the only thing memory-safe about your projects is that nobody has ever visited them."
   ],
   startup_cto: [
-    "We do not fund Figma prototypes. We fund shipped products. Your resume is the former.",
-    "I have seen pitch decks from founders with actual revenue. Yours is a pitch deck for your own job.",
-    "The term 'co-founder' appears here without a company name, a product, or a user to validate it.",
-    "Your runway is zero. Your ambition is infinity. The math on this venture does not work.",
-    "I fund people who have shipped things and failed publicly. You have shipped nothing."
+    "Your pitch deck has 45 slides of financial projections and 0 slides of actual code. Congratulations on your career in fiction.",
+    "You describe your app as 'AI-driven' which is a very fancy way of saying you call the OpenAI API with a hardcoded prompt.",
+    "Your startup's runway is shorter than the time it takes for a VC to check their phone during your pitch.",
+    "I've seen pyramid schemes with more realistic revenue models than your stealth startup.",
+    "You call yourself a founder because you bought a domain name and spent a weekend editing a Figma template."
   ],
   systems_architect: [
     "Your architecture diagram is a collection of boxes connected by arrows that describes no actual data flow.",
@@ -1316,23 +1317,23 @@ const openingsAdd = {
 
 const evidencesAdd = {
   staff_engineer: [
-    "You describe your role as 'leading optimization initiatives'—meaning you spent four hours refactoring a utility function that runs once a year.",
-    "Your repository contribution calendar looks like a barcode of despair, with green spots representing README formatting corrections instead of working code.",
-    "You claim ownership of the microservices design, but your services communicate via JSON files stored in a shared public directory.",
-    "Your unit test suite runs in 1.4 milliseconds because the only assertion is checking that 'true' is equal to 'true' to greenlight the CI runner.",
-    "You listed TypeScript because you write standard JS and cast everything to 'any' the second the compiler asks for a type definition."
+    "You describe your role as 'leading optimization' which is a very corporate way of saying you changed a background from gray to slightly lighter gray.",
+    "Your GitHub contribution grid looks like a Minecraft flat world—completely empty except for a few sheep.",
+    "You listed TypeScript because you write standard JS and cast everything as 'any' whenever the compiler starts complaining.",
+    "Your unit test suite runs so fast, I'm pretty sure it's just a script that prints a green checkmark emoji and exits.",
+    "You claim ownership of the microservices design, but your services communicate via email."
   ],
   faang_gatekeeper: [
-    "You listed 'distributed databases' but your system design will collapse if the user clicks the submit button twice.",
-    "Your LeetCode stats are listed prominently, yet you would fail the first screen asking you to explain how a hash map resolves collisions.",
-    "You list Kubernetes but your deployment pipeline is copy-pasting static build files over SFTP to a free-tier virtual server.",
-    "Your system diagram is a copy of a standard Netflix tech blog post that has absolutely no relation to your actual repository.",
-    "You claim React expertise but your components are 1500-line monoliths with state triggers that loop indefinitely."
+    "You listed 'database replication' because you once copy-pasted your sqlite file and renamed it 'backup.db'.",
+    "You claim to understand distributed systems but you still use global variables to coordinate your local scripts.",
+    "You listed Docker, but we both know your container knowledge starts and ends with copy-pasting command lines from YouTube thumbnails.",
+    "Your skills section is a Wikipedia read list of frameworks you've heard of in a Twitter space.",
+    "You claim to design high-throughput APIs but your server gets rate-limited by its own local console."
   ],
   devops_veteran: [
-    "Your pipeline is a manual 'git push origin master' with a hope that the environment variables are still correct.",
     "You listed AWS but your IAM policy is a single root user with full administrator permissions—a security hazard.",
-    "Monitoring appears nowhere in this document. Uptime is monitored by you periodically refreshing the homepage.",
+    "Your CI/CD pipeline is just you force-pushing to master and praying the build succeeds.",
+    "Monitoring is completely absent. Your uptime indicator is literally a post-it note saying 'should be fine'.",
     "Your backup strategy is storing the database dumps in the same directory on the same local disk.",
     "You claim infrastructure-as-code but have never managed a Terraform state file that survived a merge conflict."
   ],
@@ -1345,24 +1346,24 @@ const evidencesAdd = {
   ],
   exhausted_recruiter: [
     "You list 'experience with agile'—meaning you sat in standup meetings and said 'no blockers' for six months.",
-    "Your experience section describes the same role at three companies with different names and identical bullet points.",
-    "The only number on your resume is your phone number. Hiring managers want metrics, not just text.",
-    "Your summary section is an essay about ambition, and your experience section is evidence of attendance.",
-    "You listed a certification that expired in 2024. This shows a lack of attention to detail."
+    "Your experience section describes the same role at three companies with different names and identical bullets.",
+    "The only number on your resume is your phone number. Managers want outcomes, not just digits.",
+    "Your summary is an essay about ambition, and your experience is just evidence of attendance.",
+    "You listed a certification that expired in 2024. Talk about a lack of attention to detail."
   ],
   rust_elitist: [
-    "You claim to write safe code but you use 'as any' in TypeScript to bypass compiler checks.",
-    "Your dependency tree contains left-pad. The security audit is a tragedy of warnings.",
-    "You claim to optimize for memory but your web app loads 14MB of javascript on render.",
-    "You have never written a lock, a mutex, or a semaphore. Concurrency is just a keyword.",
-    "Your database schema has zero transactions and zero validation. Data integrity is just a concept."
+    "Your dependency tree contains 14,000 packages because you needed a library to check if a number is even.",
+    "You listed Rust but your repository contains exactly one file with 500 lines of unwrap() statements.",
+    "Your app consumes 2GB of RAM to render a single static page because you bundled five different charting libraries.",
+    "You claim concurrency expertise but your code runs in a single-threaded loop that halts whenever a file is read.",
+    "Your database schema is so lawless, I'm pretty sure it's legally classified as anarchy."
   ],
   startup_cto: [
-    "You are an AI wrapper merchant whose product is a standard input box calling the OpenAI API.",
-    "Your startup team consists of you, your roommate, and a ChatGPT API key that you share.",
-    "The project landing page waitlist has three entries. Two of them are you.",
-    "The startup runway is limited by your monthly credit card balance. The burn rate is purely coffee.",
-    "You describe your prototype as 'production-ready'. The database runs on a local SQLite file in '/tmp'."
+    "Your product-market fit analysis consists of a single waitlist with three entries, and two of them are your roommate.",
+    "You claim to have raised seed capital but the capital was actually a small loan from your dad's credit card.",
+    "Your database runs on a local SQLite file in '/tmp' because configuring Postgres was 'too bureaucratic'.",
+    "You listed 'VC relations' because you sent a cold email to three partners who immediately archived it.",
+    "Your business model is selling subscriptions for a product that hasn't been coded yet."
   ],
   systems_architect: [
     "You claim to write scalable APIs but you run all database queries inside synchronous loops.",
@@ -1375,18 +1376,18 @@ const evidencesAdd = {
 
 const profilesAdd = {
   staff_engineer: [
-    "You are the kind of developer who spends three days configuring a terminal theme and thirty seconds thinking about the database schema.",
-    "Your development lifecycle consists of starting a new project every time you hit a hard debugging problem in the old one.",
-    "You believe clean architecture is when you create fourteen layers of folders for a project that has less than three hundred lines of execution code.",
-    "You list 'mentorship' because you once pointed a junior developer to a documentation link you didn't read yourself.",
-    "You treat the database as a magic black box where query optimization is someone else's problem and indexes are optional decorations."
+    "You're the kind of developer who spends three days styling a terminal theme and thirty seconds writing a function that crashes the server.",
+    "Your development strategy consists of starting a new project every time you hit a bug you can't solve on Stack Overflow.",
+    "You believe 'clean architecture' is just nesting empty folders until the bugs are impossible to find.",
+    "You listed 'mentorship' because you once pointed a junior developer to a Google search results page you didn't read yourself.",
+    "You treat databases like a wishing well—you throw a query in, close your eyes, and hope it doesn't time out."
   ],
   faang_gatekeeper: [
-    "You are an interview-prep specialist who knows how to talk about the system but doesn't know how to build it.",
-    "You have optimized your resume for keyword matches rather than the technical depth needed to survive a first screen.",
-    "Your self-assessment operates at a principal level, while your shipped code evidence resides at a student level.",
-    "You have studied the form of strong candidates without the substance of having actually solved a hard scalability problem.",
-    "You are a candidate who will perform well in a guided tutorial sandbox and freeze when production goes red."
+    "You are a LeetCode memorizer who can reverse a linked list but gets a panic attack when you have to run 'npm install'.",
+    "You treat frameworks like Pokemon cards—you want to collect them all without ever using them in battle.",
+    "Your career goal is getting hired at Apple just so you can put the logo in your Twitter bio.",
+    "You are the kind of developer who will spend 12 hours optimizing a binary search and then deploy it on a dataset of size 5.",
+    "You believe you're a senior engineer because you watched a 4-hour system design video while playing video games."
   ],
   devops_veteran: [
     "You are an SRE who has never written a runbook or conducted a blameless post-mortem.",
@@ -1403,25 +1404,25 @@ const profilesAdd = {
     "You only code when you're being graded. The gaps in your commit history align perfectly with holidays."
   ],
   exhausted_recruiter: [
-    "Your professional narrative is borrowed from LinkedIn influencers and applied to a background that does not support it.",
-    "You describe yourself as a 'thought leader' on a resume with one year of junior development experience.",
+    "Your professional narrative is borrowed from LinkedIn influencers and applied to a background that doesn't support it.",
+    "You describe yourself as a 'thought leader' on a resume with exactly one year of junior experience.",
     "The internship bullet points are written in the passive voice. 'Assisted with research' means ordered lunch.",
-    "The resume includes 'proficient in office suites'. It is 2026. This is not a technical skill.",
-    "You describe yourself as 'passionate' but your github graph has been gray since the boot camp ended."
+    "The resume includes 'proficient in Microsoft Office'. It is 2026. This is not a technical skill.",
+    "You describe yourself as 'passionate' but your github graph has been gray since the bootcamp ended."
   ],
   rust_elitist: [
-    "You think of memory as a resource managed by someone else, and that something is not free.",
-    "Your dependency choices are driven by GitHub star counts rather than correctness guarantees.",
-    "You have optimized for write-time convenience and not for runtime correctness.",
-    "Your understanding of pointers is limited to 'the thing that causes segmentation faults'.",
-    "You are a safe-runtime dependent developer who thinks memory management is a task for the compiler."
+    "You treat memory safety like a religion but your code runs on a machine that has its firewall completely turned off.",
+    "You write code like a toddler playing with scissors—confident, fast, and guaranteed to cut something important.",
+    "You believe garbage collection is a human right, which is why your servers crash due to memory leaks every four hours.",
+    "Your model of pointers is 'arrows in a slideshow' and you live in constant fear of segmentation faults.",
+    "You are a Node.js developer masquerading as a systems programmer because you ran a Rust hello-world once."
   ],
   startup_cto: [
     "You have startup energy without startup evidence.",
     "The vocabulary of venture capital has colonized your resume in the absence of venture results.",
     "You are a founder in the same way that purchasing a domain name makes you a property owner.",
     "Your startup was 'acquired'—meaning you deleted the repository and updated your LinkedIn profile.",
-    "Your business model is selling subscriptions for a product that hasn't been coded yet."
+    "Your co-founder is your dog. The dog is the only team member who doesn't argue with your tech choices."
   ],
   systems_architect: [
     "Your schema has circular dependencies that will deadlock the database on the first concurrent transaction.",
@@ -1434,64 +1435,64 @@ const profilesAdd = {
 
 const verdictsAdd = {
   staff_engineer: [
-    "Strong decline. I would hire you to explain what you think you know. I would not hire you to build anything load-bearing.",
-    "Rejected. Your code has the stability of a Jello skyscraper built on a fault line of deprecated npm modules.",
-    "File this resume under 'theoretical physics' because the production environment remains entirely mythical.",
-    "No hire. Not with hostility, but with the sincere recommendation that you write code for users who aren't your classmates.",
-    "Passed on. The gap between your claims and your git history is wide enough to host a mid-size data center.",
-    "Archived. The trajectory is fine, but you need to survive a real production outage before you call yourself a senior engineer.",
-    "Declined. Your testing coverage is zero and your confidence is a hundred—that is a security hazard, not a skill.",
-    "Passed. Return when you have operated what you designed and survived the post-mortem without quitting."
+    "Strong decline. I would hire you to explain what you think you know, but I wouldn't trust you with a text editor.",
+    "Rejected. Your code has the structural integrity of a wet cardboard box in a hurricane.",
+    "No hire. Not out of malice, but because our on-call team deserves to sleep at night.",
+    "Archived in the trash bin. Return when your projects have actual users instead of just your mom.",
+    "Declined. The gap between your claims and your git history is wide enough to host a Minecraft server.",
+    "Passed. I respect the hustle, but my compiler doesn't.",
+    "No offer. Your testing coverage is so low, it's basically a state secret.",
+    "Passed on. The trajectory is fine, but you need to survive a real production outage before you call yourself a senior engineer."
   ],
   faang_gatekeeper: [
-    "Decline. The system design round would be educational for everyone involved, especially you.",
-    "Rejected. We do not hire LeetCode memorizers who cannot design a basic rate-limiting middleware.",
-    "Archived. The interview loop would close at the first technical screen to preserve everyone's sanity.",
-    "No offer. Come back when you have a story of a system that broke under actual user traffic.",
-    "Passed on. Calibrate your resume downward by two levels and reapply in a year.",
-    "Declined. You list distributed consensus but your projects use local state files in the tmp directory.",
-    "No hire. The resume is a masterpiece of keyword stuffing designed to disappoint actual engineering teams.",
-    "Not a fit. Your algorithmic skills are memorized patterns that fail the moment the problem deviates."
+    "No hire. Your code looks like it was written by three different chatbots arguing about styling rules.",
+    "Rejected. I'd ask you to write a rate limiter, but your resume suggests you'd just write a sleep loop.",
+    "Archived. Save yourself the interview prep and apply for a project manager role instead.",
+    "Declined. Your system architecture has more single points of failure than my last relationship.",
+    "Passed on. We asked for distributed database scars, not a tutorial weather app.",
+    "No offer. Return when you have shipped something that survived a single real user who wasn't you.",
+    "Rejected. The only thing you scale is the level of concern I have for your team.",
+    "Pass. I'd say good luck, but you're going to need a miracle."
   ],
   devops_veteran: [
-    "DEPLOYMENT FAILED. Keep this candidate away from the production deployment button.",
-    "Hard pass. I will not explain a database corruption to the board because we hired this background.",
-    "PIPELINE EXITED WITH CODE 1. The engineer described here is not production-ready.",
-    "Rejected. The on-call rotation would be cruel to someone with this level of operational ignorance.",
-    "No hire. Your deployment takes 15 minutes because you are downloading the entire node_modules folder on every build.",
-    "Archived. Return when your on-call runbook says something other than 'restart the server and pray'.",
-    "Passed on. The difference between your claims and your evidence is measurable in outages you haven't fixed.",
-    "No. Your database has no password and is exposed publicly to the entire internet. Access denied."
+    "REJECTED. I would not trust you to manage the deployment of a static HTML landing page.",
+    "Hard pass. Your pipeline has more red lights than a Dutch district.",
+    "No hire. Our servers are unstable enough without you adding your custom scripts to the cron list.",
+    "Archived. Go learn what an SSH key is before you apply for SRE roles.",
+    "Declined. You listed Terraform but your state file is a local mess of locks that are permanently stuck.",
+    "Passed on. The warning indicators in your console are bright enough to guide planes at night.",
+    "No offer. Your container images are so large, they have their own zip codes.",
+    "Decline. The database ran out of disk space just reading your qualifications."
   ],
   oss_maintainer: [
-    "WON'T MERGE. The evidence for the described experience level is not sufficient.",
-    "Closed without comment. The code speaks for itself, and it is saying very little.",
-    "PR rejected. Fix the fundamental issues of code organization before resubmitting.",
-    "GIT BLOCK INITIATED. Resume quality insufficient to justify proceeding to the next review stage.",
-    "THREAD LOCKED. This contribution history does not meet the standard for meaningful authorship.",
-    "Declined. Return when your pull requests have descriptions instead of 'fixed stuff'.",
-    "No offer. You have never had a pull request rejected, meaning you have never submitted code to a real project.",
-    "Passed on. The code quality checker returned 18 warnings that you ignored with eslint-disable comments."
+    "WON'T MERGE. The code quality in your repositories is a threat to the open-source community.",
+    "Closed as duplicate. We have seen this exact boilerplate portfolio 50 times today.",
+    "PR rejected. Please rewrite your entire career strategy and try again.",
+    "GIT BLOCK. The author has been banned from submitting resumes to this company.",
+    "No offer. Your code organization has the structural integrity of a soup bowl with holes.",
+    "Passed on. The test suite returns exit code 0 because there are literally no assertions.",
+    "Declined. You listed your fork as an original project. Changing the name in package.json is not coding.",
+    "Decline. Return when you have written code that someone else besides your teacher has read."
   ],
   exhausted_recruiter: [
     "Thank you for your application. We will not be moving forward at this time.",
-    "Archived in the rejection queue. Nothing personal — it is a volume problem that you did not solve.",
+    "Archived in the rejection queue. Nothing personal — it is a volume problem you didn't solve.",
     "Filing this as 'screened out'. The reasons are visible to anyone who reads past the summary.",
     "Application rejected. Please rebuild this resume from scratch with substance as the primary goal.",
     "Forwarded this to the junior roles team. They had the same feedback.",
     "The answer is no. The answer will remain no until there is evidence that the answer should change.",
-    "Declined. References available upon request has not communicated anything useful since 2008.",
+    "Declined. 'References available upon request' has not communicated anything useful since 2008.",
     "No hire. You have applied for a senior role. Your most recent job title was junior. The gap is too wide."
   ],
   rust_elitist: [
-    "COMPILE ERROR FATAL: CLAIM VERIFICATION FAILED AT EVERY CONSTRAINT BOUNDARY.",
-    "This resume cannot pass the borrow checker because the ownership of every claim is unclear.",
-    "Segmentation fault detected: your confidence has exceeded the bounds of your experience.",
-    "Undefined behavior detected in career trajectory. Abort with prejudice.",
-    "UNSAFE BLOCK DETECTED WITHOUT SAFETY PROOF. Rejected on first principles.",
-    "Rejected. Every framework you listed is an abstraction. You know none of the layers beneath.",
-    "No offer. Async/await in JS is not concurrency. It is the illusion of concurrency in event loop.",
-    "Declined. Type safety is a concept you have heard of. Memory safety is a concept you avoid."
+    "BORROW CHECKER FAILED. This candidate does not own the skills they are claiming to borrow.",
+    "SEGFAULT. Your ego has accessed restricted memory space. Abort process.",
+    "Unsafe block detected in career trajectory. Rejection is the only memory-safe option.",
+    "Null pointer exception: your experience is a reference to a memory address that doesn't exist.",
+    "Decline. Go back to your garbage collector, it's the only thing willing to clean up after you.",
+    "Type mismatch. Expected 'Senior Engineer', found 'ChatGPT Prompt Wrapper'.",
+    "Rejected. The compiler panicked trying to figure out how you got hired at your last job.",
+    "Passed on. The lifetime of your skills is shorter than the duration of the interview."
   ],
   startup_cto: [
     "VC RUNWAY EXHAUSTED. The pitch was not compelling. The product does not exist.",
