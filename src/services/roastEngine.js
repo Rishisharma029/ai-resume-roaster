@@ -6,6 +6,8 @@
 //  a different paragraph.
 // ============================================================
 
+import { formatsData } from './formats/index.js';
+
 // ─── Deterministic seeded PRNG (MurmurHash-inspired) ────────
 function cyrb53(str, seed = 0) {
   let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
@@ -1534,6 +1536,620 @@ for (const key in verdictsAdd) {
 // ════════════════════════════════════════════════════════════════
 //  MAIN EXPORT
 // ════════════════════════════════════════════════════════════════
+
+
+// ============================================================
+//  INTELLIGENT ROAST FORMAT SELECTION ENGINE (30 FORMATS)
+// ============================================================
+
+const ROAST_FORMATS = [
+  {
+    id: "github_issue",
+    name: "GitHub Issue",
+    priority: "high",
+    scoreFn: (text, features) => (features.hasGitHub ? 40 : 0) + (/\b(git|github|repository|repo|pull request|branch)\b/i.test(text) ? 20 : 0),
+    formatFn: (data) => `### ⚠️ Issue #404: System Architecture Insufficiency
+**State**: Closed (wontfix)
+**Assignee**: ${data.candidateName || "Candidate"}
+**Labels**: bug, wontfix, tutorial-tier
+
+**Description**:
+${data.body}
+
+**Final Blow**:
+> ${data.finalBlow}`
+  },
+  {
+    id: "npm_install_log",
+    name: "npm Install Log",
+    priority: "high",
+    scoreFn: (text, features) => (/\b(node|npm|javascript|react|express|next\.js|package\.json)\b/i.test(text) ? 45 : 0),
+    formatFn: (data) => {
+      const cleanName = (data.candidateName || "candidate").toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `$ npm install ${cleanName}-experience
+npm WARN deprecated ${cleanName}-stack@0.0.1: This package is completely load-bearing hope.
+npm ERR! code EROAST
+npm ERR! path /usr/local/lib/node_modules/sanity
+
+npm ERR! ${data.body.replace(/\n/g, "\nnpm ERR! ")}
+
+npm ERR! A complete log of this disaster can be found in: /tmp/sanity-debug.log`;
+    }
+  },
+  {
+    id: "docker_log",
+    name: "Docker Log",
+    priority: "high",
+    scoreFn: (text, features) => (/\b(docker|kubernetes|container|k8s|pod|pods)\b/i.test(text) ? 45 : 0),
+    formatFn: (data) => `[INFO] Starting container dots ${(data.candidateName || "candidate").toLowerCase().replace(/[^a-z0-9]/g, '-')}-app:latest
+[WARN] Health check failed: Container is not responding to ping.
+[ERROR] Out of Memory: Container exited with status 137.
+[CRITICAL] Error logs:
+
+${data.body}
+
+[FATAL] dots ${data.finalBlow}`
+  },
+  {
+    id: "security_audit",
+    name: "Security Audit",
+    priority: "high",
+    scoreFn: (text, features) => (/\b(security|cyber|owasp|vulnerability|vulnerabilities|pen-test|cybersecurity)\b/i.test(text) ? 45 : 0),
+    formatFn: (data) => `### 🛡️ OWASP Sanity Audit Report
+**Target**: ${data.candidateName || "Candidate"} Portfolio
+**Risk Level**: CRITICAL (10/10 Vulnerabilities)
+
+**Vulnerability Summary**:
+${data.body}
+
+**Mitigation**:
+Recommend touching grass immediately. ${data.finalBlow}`
+  },
+  {
+    id: "startup_investor",
+    name: "Startup Investor Review",
+    priority: "high",
+    scoreFn: (text, features) => (features.startupCount >= 2 || /\b(founder|ceo|startup|pitch|equity|runway|funding|pre-seed|seed)\b/i.test(text) ? 40 : 0),
+    formatFn: (data) => `### 💸 Seed Round Investor Review
+**Company**: Localhost Stealth MVP
+**Founder**: ${data.candidateName || "Candidate"}
+**Decision**: PASS (No Term Sheet)
+
+**Review Notes**:
+${data.body}
+
+**Verdict Summary**:
+${data.finalBlow}`
+  },
+  {
+    id: "ai_review",
+    name: "AI Review / GPU Exhaustion",
+    priority: "high",
+    scoreFn: (text, features) => (/\b(ai|ml|openai|pytorch|tensorflow|neural|llm|gpt|llms)\b/i.test(text) ? 45 : 0),
+    formatFn: (data) => `>>> Running inference on candidate profile...
+>>> GPU Temperature: 98°C
+>>> Warning: Model hallucinations detected in skills block.
+>>> Error: Content generation failed due to quality threshold constraints.
+
+>>> Log Output:
+${data.body}
+
+>>> Diagnostic conclusion:
+${data.finalBlow}`
+  },
+  {
+    id: "hr_rejection",
+    name: "HR Rejection Email",
+    priority: "medium",
+    scoreFn: (text, features) => (features.wordCount < 150 || features.metricsCount === 0 ? 30 : 0),
+    formatFn: (data) => `Subject: Regret: Your Application for Senior Software Engineer
+
+Dear ${data.candidateName || "Candidate"},
+
+Thank you for your interest in our company. After reviewing your qualifications, we found that:
+${data.body}
+
+We will keep your resume on file (in our digital shredder).
+
+Sincerely,
+${data.finalBlow}`
+  },
+  {
+    id: "court_verdict",
+    name: "Court Verdict",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(responsible|assisted|collaborated)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### ⚖️ IN THE COURT OF ENGINEERING SANITY
+**Case**: The People vs. ${data.candidateName || "Candidate"}
+**Verdict**: GUILTY of Grand Larceny of Boilerplate
+
+**Judicial Review**:
+${data.body}
+
+**Sentence**:
+${data.finalBlow}`
+  },
+  {
+    id: "doctor_diagnosis",
+    name: "Doctor Diagnosis",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(burnout|caffeine|exhausted|tired)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### 🩺 CLINICAL DIAGNOSIS REPORT
+**Patient**: ${data.candidateName || "Candidate"}
+**Symptom**: Terminal Framework Hoarding
+
+**Diagnosis**:
+${data.body}
+
+**Prescription**:
+${data.finalBlow}`
+  },
+  {
+    id: "police_report",
+    name: "Police Incident Report",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(crash|hack|breach|incident|unauthorized)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `POLICE DEPARTMENT INCIDENT LOG
+Incident ID: #9821
+Officer: SRE Veteran
+Suspect: ${data.candidateName || "Candidate"}
+
+Incident Summary:
+${data.body}
+
+Action Taken:
+${data.finalBlow}`
+  },
+  {
+    id: "horror_story",
+    name: "Horror Story",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(jquery|php|legacy|cobol|svn|wordpress)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### 👻 The Curse of the Legacy Codebase
+It was midnight when the team lead opened the index.js file...
+
+Inside, they found:
+${data.body}
+
+They say that to this day, if you run the build:
+> ${data.finalBlow}`
+  },
+  {
+    id: "dating_profile",
+    name: "Dating Profile Red Flags",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(passionate|team player|motivated|enthusiastic)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 💔 Relationship Red Flag Report
+**Name**: ${data.candidateName || "Candidate"}
+**Compatibility**: 0% (Fatal Error)
+
+**Red Flag List**:
+${data.body}
+
+**Verdict**:
+${data.finalBlow}`
+  },
+  {
+    id: "yelp_rant",
+    name: "Customer Review / Yelp Rant",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(ui|ux|css|frontend|figma|design|tailwind|styles)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### ⭐ yelp.com - 1/5 Stars Review
+**Reviewed by**: Senior Team Lead
+"I hired this candidate expecting production-ready code, but all I got was:
+${data.body}
+${data.finalBlow}"`
+  },
+  {
+    id: "amazon_review",
+    name: "Amazon Review",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(certificate|certified|udemy|coursera|credentials)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### ⭐ Amazon Verified Purchase - 1/5 Stars
+**Item**: ${data.candidateName || "Candidate"} Resume
+**Title**: Labeled 'Senior Developer', arrived as three junior templates.
+
+**Review**:
+${data.body}
+
+**Return Status**:
+${data.finalBlow}`
+  },
+  {
+    id: "google_search",
+    name: "Google Search Autocomplete",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(how to|basic|tutorial|tutorials|simple)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 🔍 Google Search Results
+Search Query: "how does ${data.candidateName || "candidate"} write code"
+
+*Did you mean*:
+- "how to hide compiler warnings in production"
+- "is it okay to delete the test folder to pass CI"
+
+*Description*:
+${data.body}
+
+*Final Blow*:
+${data.finalBlow}`
+  },
+  {
+    id: "stack_overflow",
+    name: "Stack Overflow Closure Notice",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(copy-paste|question|help|debug|issue)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### ❌ Closed on Stack Overflow
+**Question**: How do I solve this basic bug?
+**Closed by**: Senior Moderator
+**Reason**: Closed as off-topic because:
+${data.body}
+
+**Moderator Note**:
+${data.finalBlow}`
+  },
+  {
+    id: "git_commit",
+    name: "Git Commit History",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(commit|merge|branch|rebase|push|pull)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `$ git log --oneline
+* f82a91d (HEAD -> master) [PUNCHLINE: dots ${data.finalBlow}]
+* c9182aa [STITCHED ROAST: ${data.body.replace(/\n/g, " ")}]
+* 00192ba (origin/master) init: starting another tutorial project to escape debugging the old one`
+  },
+  {
+    id: "windows_bsod",
+    name: "Windows Blue Screen of Death",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(memory|pointer|deadlock|heap|stack overflow)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `A problem has been detected and Windows has been shut down to prevent damage to your eyes.
+
+SYSTEM_SANITY_FATAL:
+${data.body}
+
+Technical Information:
+*** STOP: 0x000000D1 (${data.finalBlow})`
+  },
+  {
+    id: "therapy_session",
+    name: "Therapy Session Transcript",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(visionary|innovator|guru|ninja|wizard)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### 🛋️ Therapy Intake Transcript
+**Patient**: ${data.candidateName || "Candidate"}
+**Therapist**: Let's talk about the delusions of grandeur in your career goals...
+
+**Session Notes**:
+${data.body}
+
+**Therapist Summary**:
+${data.finalBlow}`
+  },
+  {
+    id: "sports_commentary",
+    name: "Sports Live Play-by-Play",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(award|hackathon|champion|win|won|first place)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 🎙️ Sports Live Commentary
+"Welcome back to the engineering championships! dots ${data.candidateName || "Candidate"} is at the keyboard...
+
+And they're going for the deployment... oh! It's a disaster!
+${data.body}
+The crowd is in absolute shock!"
+
+**Final Call**:
+${data.finalBlow}`
+  },
+  {
+    id: "vc_term_sheet",
+    name: "VC Term Sheet Rejection",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(disruptive|saas|mrr|valuation|term sheet)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### 💸 Venture Capital Investment Committee Report
+**Target**: Stealth Startup (Hype MVP)
+**Founder**: ${data.candidateName || "Candidate"}
+**Verdict**: No Investment (Valuation: ₹0)
+
+**Assessment**:
+${data.body}
+
+**Decision Note**:
+${data.finalBlow}`
+  },
+  {
+    id: "cscareerquestions",
+    name: "Reddit r/cscareerquestions Roast Thread",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(student|internship|junior|new grad|entry level)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `### 💬 reddit.com/r/cscareerquestions
+**Posted by**: u/hiring_manager_bot
+**Title**: "Review my resume (getting 0 interviews in 6 months)"
+
+**Top Comment (1.2k upvotes)**:
+${data.body}
+
+**Mod sticky**:
+${data.finalBlow}`
+  },
+  {
+    id: "gordon_ramsay",
+    name: "Gordon Ramsay Kitchen Nightmare",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(spaghetti|raw|messy|nightmare)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 🤬 GORDON RAMSAY IN THE CODEBASE
+"Look at this codebase! It's raw! It's absolutely raw!
+
+Who wrote this?:
+${data.body}
+
+${data.finalBlow}"`
+  },
+  {
+    id: "gen_z_tiktok",
+    name: "Gen Z / TikTok Brain Rot Critique",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(aesthetic|vibe|vibes|trendy|emoji)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 💀 Resume Check: No Cap
+**Candidate**: ${data.candidateName || "Candidate"}
+**Vibe Check**: Failed the assignment 💅
+
+**Review**:
+${data.body}
+
+That's definitely not very demure, not very mindful. ${data.finalBlow}`
+  },
+  {
+    id: "shakespearean",
+    name: "Shakespearean Tragedy Play",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(thou|thee|shall|art|hark)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 🎭 The Tragedy of the Software Apprentice
+**Act III, Scene II**
+*Enter ${data.candidateName || "Candidate"} with a broken compilation run.*
+
+**Chorus**:
+"Hark! Behold the compilation errors of thy labor:
+${data.body}
+
+Alas, the server crashes, and the night grows cold... ${data.finalBlow}"`
+  },
+  {
+    id: "corporate_pip",
+    name: "Corporate PIP",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(performance|average|improvement|pip)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 📋 Performance Improvement Plan (PIP)
+**Employee**: ${data.candidateName || "Candidate"}
+**Duration**: 30 Days (Immediate Action Required)
+
+**Area of Deficiency**:
+${data.body}
+
+**Required Goal**:
+${data.finalBlow}`
+  },
+  {
+    id: "aws_bill",
+    name: "AWS Bill Breakdown / Cost Audit",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(aws|ec2|s3|serverless|lambda)\b/i.test(text) ? 40 : 0),
+    formatFn: (data) => `### ☁️ AWS Cost & Usage Audit
+**Account**: ${data.candidateName || "Candidate"} Personal Sandbox
+**Monthly Bill**: $4,912.43 (Tier: Free Tier Mistake)
+
+**Resource Cost Breakdown**:
+- Unused Kubernetes clusters running hello-world: $4,200.00
+- Serverless cold-starts on static page: $712.43
+
+**Infrastructure Review**:
+${data.body}
+
+**AWS Support Message**:
+${data.finalBlow}`
+  },
+  {
+    id: "linkedin_influencer",
+    name: "LinkedIn Influencer Post",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(network|leader|influence|growth|b2b)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 🤝 linkedin.com - Professional Post
+"I am thrilled to announce that after 30 seconds of reviewing this resume, I've decided to share a toxic positivity lesson...
+
+Here is what this candidate's background taught me:
+${data.body}
+
+Agree? Let's connect! dots dots ${data.finalBlow}"`
+  },
+  {
+    id: "clippy_dialog",
+    name: "Clippy Assistant Warning Dialog",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(office|word|excel|administrative|clippy)\b/i.test(text) ? 30 : 0),
+    formatFn: (data) => `### 📎 Microsoft Word Assistant
+"It looks like you are trying to write a software engineering resume.
+
+Would you like help with:
+- Explaining why your projects are just tutorial forks?
+- Removing Microsoft Office from your tech skills?
+
+**Suggestions**:
+dots ${data.body}
+
+${data.finalBlow}"`
+  },
+  {
+    id: "database_deadlock",
+    name: "Database Deadlock / SQL Dump Audit",
+    priority: "medium",
+    scoreFn: (text, features) => (/\b(sql|database|postgres|mysql|transaction|query)\b/i.test(text) ? 35 : 0),
+    formatFn: (data) => `-- TRANSACTION DEADLOCK DETECTED
+-- LATEST DETECTED CONFLICTING TRANSACTION:
+BEGIN TRANSACTION;
+-- [STITCHED ROAST]:
+-- ${data.body.replace(/\n/g, " ")}
+
+ROLLBACK TRANSACTION; -- Reason: Integrity constraints violated. dots ${data.finalBlow}`
+  }
+];
+
+
+
+// ============================================================
+//  QUALITY ENHANCEMENTS — COOLDOWN, TONE & DOMAIN ENGINES
+// ============================================================
+
+function detectDomain(text) {
+  const domains = [
+    { name: "DevOps", keywords: ["docker", "kubernetes", "k8s", "pod", "aws", "terraform", "pipeline", "ci/cd", "jenkins", "ansible"] },
+    { name: "Cybersecurity", keywords: ["security", "cyber", "owasp", "pen-test", "vulnerability", "encryption", "firewall", "breach", "mitigation"] },
+    { name: "AI", keywords: ["ai", "machine learning", "openai", "pytorch", "tensorflow", "neural", "llm", "deep learning", "nlp", "model"] },
+    { name: "Mobile", keywords: ["flutter", "react native", "swift", "kotlin", "android", "ios", "mobile", "app store"] },
+    { name: "Frontend", keywords: ["react", "frontend", "css", "html", "tailwind", "figma", "three.js", "framer motion", "ui/ux"] },
+    { name: "Backend", keywords: ["node", "backend", "express", "django", "postgres", "sql", "database", "mongodb", "api", "graphql"] }
+  ];
+
+  let bestDomain = "Generic";
+  let maxCount = 0;
+
+  for (const dom of domains) {
+    let count = 0;
+    for (const kw of dom.keywords) {
+      if (text.includes(kw)) count++;
+    }
+    if (count > maxCount) {
+      maxCount = count;
+      bestDomain = dom.name;
+    }
+  }
+  return bestDomain;
+}
+
+function getTone(str) {
+  // Deterministic tone distribution classification
+  const hash = cyrb53(str) % 100;
+  if (hash < 20) return "light";
+  if (hash < 60) return "funny";
+  if (hash < 85) return "savage";
+  if (hash < 95) return "brutal";
+  return "legendary";
+}
+
+function getEasterEggTier(str) {
+  const hash = cyrb53(str) % 1000;
+  if (hash < 1) return "mythic";      // 0.1%
+  if (hash < 10) return "legendary";  // 0.9%
+  if (hash < 90) return "epic";       // 8.0%
+  if (hash < 290) return "rare";      // 20.0%
+  return "common";                    // 71.0%
+}
+
+function getHistory(key) {
+  if (typeof window === 'undefined') return [];
+  try {
+    const data = sessionStorage.getItem(`roast_history_${key}`);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveHistory(key, item, limit) {
+  if (typeof window === 'undefined') return;
+  try {
+    const list = getHistory(key);
+    list.push(item);
+    if (list.length > limit) list.shift();
+    sessionStorage.setItem(`roast_history_${key}`, JSON.stringify(list));
+  } catch (e) {}
+}
+
+function pickWithCooldown(arr, historyList, rand) {
+  const available = arr.filter(item => !historyList.includes(item));
+  if (available.length > 0) {
+    return available[Math.floor(rand() * available.length)];
+  }
+  return arr[Math.floor(rand() * arr.length)];
+}
+
+function pickByTone(arr, targetTone, historyList, rand) {
+  const matching = arr.filter(item => getTone(item) === targetTone && !historyList.includes(item));
+  if (matching.length > 0) {
+    return matching[Math.floor(rand() * matching.length)];
+  }
+  const matchingAny = arr.filter(item => getTone(item) === targetTone);
+  if (matchingAny.length > 0) {
+    return matchingAny[Math.floor(rand() * matchingAny.length)];
+  }
+  return pickWithCooldown(arr, historyList, rand);
+}
+
+function pickEasterEgg(arr, targetTier, rand) {
+  const matching = arr.filter(e => getEasterEggTier(e) === targetTier);
+  if (matching.length > 0) return matching[Math.floor(rand() * matching.length)];
+  return arr[Math.floor(rand() * arr.length)];
+}
+
+function getOverlapScore(str1, str2) {
+  const stopWords = new Set(["the", "a", "an", "and", "or", "but", "if", "because", "as", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "can", "will", "just", "should", "now"]);
+  const words1 = new Set(str1.toLowerCase().split(/[^a-z0-9]+/i).filter(w => w.length > 2 && !stopWords.has(w)));
+  const words2 = str2.toLowerCase().split(/[^a-z0-9]+/i).filter(w => w.length > 2 && !stopWords.has(w));
+  let overlap = 0;
+  for (const w of words2) {
+    if (words1.has(w)) overlap++;
+  }
+  return overlap;
+}
+
+const fallbackData = {
+  candidateName: "Candidate",
+  project: "your project",
+  language: "your programming language",
+  framework: "your framework",
+  skill: "your skill",
+  github: "your repository",
+  experience: "your experience",
+  achievement: "your achievement",
+  education: "your education",
+  missingSection: "testing coverage",
+  certification: "your certification"
+};
+
+function selectRoastFormat(text, resumeText, features, rand) {
+  const scored = [];
+  const domain = detectDomain(text);
+  const cooldownFormats = getHistory("formats");
+
+  for (const fmt of ROAST_FORMATS) {
+    if (cooldownFormats.includes(fmt.id)) continue;
+
+    let rawScore = fmt.scoreFn(text, features);
+
+    // Domain scoring boosts
+    if (domain === "DevOps" && ["docker_log", "aws_bill"].includes(fmt.id)) rawScore += 25;
+    else if (domain === "Cybersecurity" && fmt.id === "security_audit") rawScore += 25;
+    else if (domain === "AI" && fmt.id === "ai_review") rawScore += 25;
+    else if (domain === "Frontend" && fmt.id === "yelp_rant") rawScore += 25;
+    else if (domain === "Backend" && fmt.id === "database_deadlock") rawScore += 25;
+
+    const priorityWeight = { high: 2.0, medium: 1.2, low: 0.8 }[fmt.priority] || 1.0;
+    const finalScore = rawScore * priorityWeight;
+
+    scored.push({ format: fmt, score: finalScore });
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+
+  if (scored.length === 0 || scored[0].score < 30) {
+    return null;
+  }
+
+  // Tied-Score Randomizer
+  if (scored.length > 1 && Math.abs(scored[0].score - scored[1].score) <= 5) {
+    return rand() < 0.5 ? scored[0].format : scored[1].format;
+  }
+
+  return scored[0].format;
+}
 export function analyzeResume(resumeText, personality) {
   const text = resumeText.toLowerCase();
   const textSeed = cyrb53(resumeText);
@@ -1883,6 +2499,178 @@ export function analyzeResume(resumeText, personality) {
 
   const dynamicRoast = synthesizeCinematicRoast(personality.id, candidateName, detectedAngles, foundSkills, foundTutorials, experienceAction, rand, text, sweatInfo, productionExposure, sweatIndex, contradictions);
   
+  
+  
+  // Format selection engine execution
+  const formatFeatures = {
+    hasGitHub,
+    hasLiveLink,
+    buzzwordCount,
+    tutorialCount,
+    metricsCount,
+    wordCount,
+    startupCount,
+    frameworkCount,
+    frameworks: listedFrameworks,
+    founderHallucination,
+    sweatIndex,
+    isCSSWizard,
+    isReadmePhilosopher,
+    isUnicornDetector,
+    isPitchDeckSurvivor,
+    isAncientResume,
+    isOpenSourceTourist,
+    isFinalFinalV2,
+    isProductivityGuru
+  };
+
+  
+  const matchedFormat = selectRoastFormat(text, resumeText, formatFeatures, rand);
+  if (matchedFormat) {
+    const pools = formatsData[matchedFormat.id];
+    if (pools) {
+      // Cooldown history lists
+      const hTitles = getHistory("titles");
+      const hPunchlines = getHistory("punchlines");
+      const hVerdicts = getHistory("verdicts");
+
+      // Pick tone distribution
+      const toneRoll = rand() * 100;
+      let targetTone = "funny";
+      if (toneRoll < 20) targetTone = "light";
+      else if (toneRoll < 60) targetTone = "funny";
+      else if (toneRoll < 85) targetTone = "savage";
+      else if (toneRoll < 95) targetTone = "brutal";
+      else targetTone = "legendary";
+
+      // Interpolator
+      const interpolate = (str, data) => str.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+        if (data[key] && data[key] !== "undefined" && String(data[key]).trim().length > 0) {
+          return data[key];
+        }
+        return fallbackData[key] || match;
+      });
+
+      // 1. Pick Title
+      const title = pickWithCooldown(pools.titles, hTitles, rand);
+      
+      // 2. Pick Opening
+      const opening = pickWithCooldown(pools.openings, [], rand);
+      
+      // 3. Pick 2 distinct findings with no wording overlap
+      const rawFindings = [];
+      let tries = 0;
+      while (rawFindings.length < 2 && tries < 40) {
+        const candidate = pickByTone(pools.findings, targetTone, [], rand);
+        if (!rawFindings.includes(candidate)) {
+          if (rawFindings.length === 0 || getOverlapScore(rawFindings[0], candidate) === 0) {
+            rawFindings.push(candidate);
+          }
+        }
+        tries++;
+      }
+      if (rawFindings.length < 2) {
+        rawFindings.push(pools.findings[0]);
+      }
+
+      const interpolationData = {
+        candidateName: candidateName || "Candidate",
+        project: pickWithCooldown(foundSkills, [], rand) || "localhost app",
+        language: pickWithCooldown(foundSkills, [], rand) || "JavaScript",
+        framework: pickWithCooldown(foundSkills, [], rand) || "React",
+        skill: pickWithCooldown(foundSkills, [], rand) || "coding",
+        github: hasGitHub ? "GitHub portfolio" : "local repository",
+        experience: experienceAction || "development work",
+        achievement: pickWithCooldown(foundSkills, [], rand) || "learning new tech",
+        certification: pickWithCooldown(foundSkills, [], rand) || "certification check",
+        education: "degree path",
+        missingSection: "testing coverage"
+      };
+
+      const findings = rawFindings.map(f => interpolate(f, interpolationData)).join(" ");
+      
+      // 4. Pick Punchline (ensuring no word overlap with findings/title)
+      let punchline = "";
+      tries = 0;
+      while (tries < 30) {
+        const candidate = pickByTone(pools.punchlines, targetTone, hPunchlines, rand);
+        if (getOverlapScore(findings, candidate) === 0) {
+          punchline = candidate;
+          break;
+        }
+        tries++;
+      }
+      if (!punchline) {
+        punchline = pickWithCooldown(pools.punchlines, hPunchlines, rand);
+      }
+      
+      // 5. Pick Verdict
+      const verdict = pickByTone(pools.verdicts, targetTone, hVerdicts, rand);
+      
+      // 6. Easter Egg probability & tiering check
+      let easterEgg = "";
+      const eggRoll = rand() * 1000;
+      let chosenEgg = null;
+      if (eggRoll < 1) { // 0.1% Mythic
+        chosenEgg = pickEasterEgg(pools.easterEggs, "mythic", rand);
+      } else if (eggRoll < 10) { // 0.9% Legendary
+        chosenEgg = pickEasterEgg(pools.easterEggs, "legendary", rand);
+      } else if (eggRoll < 30) { // 2.0% Epic
+        chosenEgg = pickEasterEgg(pools.easterEggs, "epic", rand);
+      } else if (eggRoll < 80) { // 5.0% Rare
+        chosenEgg = pickEasterEgg(pools.easterEggs, "rare", rand);
+      } else if (eggRoll < 180) { // 10.0% Common
+        chosenEgg = pickEasterEgg(pools.easterEggs, "common", rand);
+      }
+
+      if (chosenEgg) {
+        const tierBadge = { mythic: "🔴 MYTHIC", legendary: "🟡 LEGENDARY", epic: "🟣 EPIC", rare: "🔵 RARE", common: "⚪ COMMON" }[getEasterEggTier(chosenEgg)] || "COMMON";
+        easterEgg = "\n\n🚨 [EASTER EGG - " + tierBadge + "] " + chosenEgg;
+      }
+
+      let bodyText = `${opening} ${findings} ${punchline}${easterEgg}`;
+
+      // 7. Multi-Stage connected chain roast (for final scores >= 80)
+      if (finalScore >= 80) {
+        const secondary = ROAST_FORMATS.find(f => f.id !== matchedFormat.id);
+        if (secondary) {
+          const secPools = formatsData[secondary.id];
+          if (secPools) {
+            const secTitle = pickWithCooldown(secPools.titles, [], rand);
+            const secFinding = interpolate(pickWithCooldown(secPools.findings, [], rand), interpolationData);
+            const secVerdict = pickWithCooldown(secPools.verdicts, [], rand);
+            
+            const secondaryBody = secondary.formatFn({
+              title: secTitle,
+              body: secFinding,
+              finalBlow: secVerdict,
+              candidateName,
+              personalityId: personality.id
+            });
+            bodyText += `\n\n---\n\n### 🔗 LINKED SUB-INCIDENT REPORT\n${secondaryBody}`;
+          }
+        }
+      }
+      
+      const formattedBody = matchedFormat.formatFn({
+        title,
+        body: bodyText,
+        finalBlow: verdict,
+        candidateName,
+        personalityId: personality.id
+      });
+
+      // Save histories
+      saveHistory("formats", matchedFormat.id, 10);
+      saveHistory("titles", title, 20);
+      saveHistory("punchlines", punchline, 20);
+      saveHistory("verdicts", verdict, 20);
+
+      dynamicRoast.title = title;
+      dynamicRoast.body = formattedBody;
+      dynamicRoast.finalBlow = verdict;
+    }
+  }
   const stackOverflowDetected = text.includes('self learner') || text.includes('self-learner') || text.includes('problem solver') || text.includes('problem-solver');
   if (stackOverflowDetected) {
     dynamicRoast.body = `SOURCE ANALYSIS:\n92% Stack Overflow inheritance detected\n\n${dynamicRoast.body}`;
