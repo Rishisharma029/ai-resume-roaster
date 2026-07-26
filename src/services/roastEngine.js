@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 //  AI RESUME ROASTER — DYNAMIC ROAST ENGINE v3.0
 //  Fragment-based sentence assembly ensures every roast is
 //  statistically unique. Pools are large enough that even
@@ -1039,6 +1039,324 @@ const TRANSITION_B = [
   "The résumé is a mirror. What it reflects is this.",
   "And underneath all of it, this is what I see."
 ];
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  EVIDENCE-BASED ROAST ENGINE
+//  Inspects every line of the resume — every skill, every project, every
+//  claim — and produces comedy that is explainable by actual evidence.
+//  NEVER invents technologies. NEVER hallucates projects.
+// ═══════════════════════════════════════════════════════════════════════════
+
+function extractResumeFeatures(resumeText) {
+  const text = resumeText.toLowerCase();
+
+  // Tutorial / clone app detection
+  const tutorialAppMap = {
+    'todo': 'Todo List App', 'to-do': 'Todo List App', 'todolist': 'Todo List App',
+    'weather app': 'Weather App', 'weather api': 'Weather App', 'openweather': 'Weather App',
+    'calculator': 'Calculator App', 'expense tracker': 'Expense Tracker',
+    'chat app': 'Chat App', 'chatbot': 'AI Chatbot', 'messaging app': 'Chat App',
+    'netflix clone': 'Netflix Clone', 'amazon clone': 'Amazon Clone',
+    'uber clone': 'Uber Clone', 'twitter clone': 'Twitter Clone',
+    'instagram clone': 'Instagram Clone',
+    'blog': 'Blog App', 'notes app': 'Notes App', 'note taking': 'Notes App',
+    'quiz app': 'Quiz App', 'quiz game': 'Quiz App',
+    'crud app': 'CRUD App', 'crud application': 'CRUD App',
+    'landing page': 'Landing Page'
+  };
+  const tutorialApps = [];
+  Object.entries(tutorialAppMap).forEach(([key, label]) => {
+    if (text.includes(key) && !tutorialApps.includes(label)) tutorialApps.push(label);
+  });
+
+  // Frontend vs backend skill analysis
+  const frontendKeywords = ['react', 'vue', 'angular', 'svelte', 'html', 'css', 'tailwind', 'bootstrap', 'figma', 'framer', 'gatsby', 'next.js', 'nextjs', 'vite', 'redux', 'context api'];
+  const backendKeywords = ['node', 'node.js', 'express', 'django', 'flask', 'fastapi', 'spring', 'rails', 'sql', 'postgres', 'postgresql', 'mongodb', 'redis', 'graphql', 'mysql', 'prisma', 'sequelize', 'supabase'];
+  const frontendSkills = frontendKeywords.filter(s => text.includes(s));
+  const backendSkills  = backendKeywords.filter(s => text.includes(s));
+
+  // Certification count
+  const certKeywords = ['certified', 'certification', 'certificate', 'coursera', 'udemy', 'udacity', 'edx', 'google certified', 'microsoft certified', 'hackerrank', 'linkedin learning', 'codecademy', 'alison'];
+  const certCount = Math.min(10, certKeywords.reduce((n, kw) => n + (text.split(kw).length - 1), 0));
+
+  // Quantified metrics
+  const metricsMatches = resumeText.match(/\d+\s*[%+x]\b|\$\s*\d+|\d+[kKmM]\+?|\d+\s*(users|requests|seconds|ms|GB|TB|million|billion|transactions|downloads|stars)/gi) || [];
+
+  // Claimed seniority / leadership titles
+  const titleKeywords = ['senior', 'lead', 'principal', 'architect', 'staff engineer', 'manager', 'head of', 'vp ', 'director', 'ceo', 'cto', 'founder', 'co-founder'];
+  const seniorTitles = titleKeywords.filter(t => text.includes(t));
+
+  // Links
+  const hasGitHub    = text.includes('github.com');
+  const hasLiveLink  = /vercel\.app|netlify\.app|github\.io/.test(text) || (resumeText.match(/https?:\/\//gi) || []).length >= 2;
+
+  // Buzzwords
+  const buzzList = ['passionate', 'driven', 'synergy', 'leverage', 'disruptive', 'innovative', 'dynamic', 'visionary', 'problem solver', 'fast learner', 'team player', 'hardworking', 'self-motivated', 'results-driven', 'thought leader', 'go-getter'];
+  const buzzwords = buzzList.filter(b => text.includes(b));
+
+  // Passive ownership language
+  const passiveVerbList = ['responsible for', 'assisted with', 'helped with', 'worked with team', 'involved in', 'participated in', 'contributed to'];
+  const passiveVerbs = passiveVerbList.filter(v => text.includes(v));
+
+  // AI / ML claims vs actual ML stack
+  const aiClaimsList = ['machine learning', 'deep learning', 'neural network', 'ai engineer', 'data scientist', 'natural language processing', 'computer vision', 'large language model', 'llm', 'generative ai'];
+  const aiClaims = aiClaimsList.filter(a => text.includes(a));
+  const hasMLFrameworks = ['pytorch', 'tensorflow', 'scikit-learn', 'scikit', 'keras', 'model training', 'training loop', 'fine-tuning', 'finetuning', 'gradient descent', 'backpropagation', 'hugging face', 'transformers'].some(f => text.includes(f));
+
+  const allFrameworks = [...new Set([...frontendSkills, ...backendSkills])];
+
+  // Skills section density
+  const skillsSectionMatch = resumeText.match(/skills[\s\S]{0,30}?:([\s\S]{0,800}?)(?:\n\n[A-Z]|$)/i);
+  const skillsText = skillsSectionMatch ? skillsSectionMatch[1] : '';
+  const skillsCount = skillsText.length > 0
+    ? (skillsText.match(/\b[A-Za-z][A-Za-z.+#]{1,}\b/g) || []).length
+    : allFrameworks.length;
+
+  const wordCount = resumeText.trim().split(/\s+/).length;
+
+  // Open source tourist detection
+  const claimsOpenSource  = /open[\s-]source enthusiast|open[\s-]source contributor/i.test(text);
+  const hasContributions  = /merged\s+pr|merged\s+pull\s+request|maintainer|core\s+team/i.test(text);
+
+  return {
+    tutorialApps, frontendSkills, backendSkills,
+    certCount, metricsMatches, seniorTitles,
+    hasGitHub, hasLiveLink, buzzwords, passiveVerbs,
+    aiClaims, hasMLFrameworks, allFrameworks,
+    skillsCount, wordCount, claimsOpenSource, hasContributions
+  };
+}
+
+// ─── Evidence-Based Joke Compiler ─────────────────────────────────────────
+// Every joke is explainable by evidence found in the resume.
+// NEVER generates random technology jokes.
+function compileEvidenceBasedJokes(features, resumeText) {
+  const jokes = [];
+  const year = new Date().getFullYear();
+
+  // 1. Tutorial app overload
+  if (features.tutorialApps.length >= 3) {
+    jokes.push({
+      evidence: `Projects include: ${features.tutorialApps.join(', ')}.`,
+      roast: `You built the complete tutorial starter pack. YouTube autoplay has shaped your entire engineering career trajectory.`
+    });
+  } else if (features.tutorialApps.length === 2) {
+    jokes.push({
+      evidence: `Projects include: ${features.tutorialApps.join(' and ')}.`,
+      roast: `Two tutorial projects on one resume. The hiring manager has seen this combo 200 times this month. They keep a tally.`
+    });
+  } else if (features.tutorialApps.length === 1) {
+    jokes.push({
+      evidence: `Projects include: ${features.tutorialApps[0]}.`,
+      roast: `A ${features.tutorialApps[0]} in ${year}. Bold choice. The engineering community thanks you for your service.`
+    });
+  }
+
+  // 2. Frontend-only with no backend skills
+  if (features.frontendSkills.length >= 3 && features.backendSkills.length === 0) {
+    jokes.push({
+      evidence: `Frontend skills listed: ${features.frontendSkills.slice(0, 4).join(', ')}. Backend skills found: none.`,
+      roast: `You've built ${features.frontendSkills.length} layers of beautiful UI and still haven't discovered that data has to come from somewhere. The backend is not a myth.`
+    });
+  }
+
+  // 3. Certification hoarding
+  if (features.certCount >= 4) {
+    jokes.push({
+      evidence: `Detected ${features.certCount}+ certification mentions on this resume.`,
+      roast: `${features.certCount} certifications. Zero deployed projects. Certificates are receipts. Receipts are not the meal.`
+    });
+  } else if (features.certCount >= 2) {
+    jokes.push({
+      evidence: `${features.certCount} certifications found.`,
+      roast: `Certifications are a good start. They are not a substitute for a GitHub link that connects to working software.`
+    });
+  }
+
+  // 4. Zero quantified achievements
+  if (features.metricsMatches.length === 0) {
+    jokes.push({
+      evidence: `Zero measurable numbers found anywhere in the document (no %, $, users, ms, requests/sec, or numerical evidence of any kind).`,
+      roast: `You 'improved performance', 'streamlined workflows', and 'enhanced user experience'. By how much? For how many users? Nobody knows. Not even you.`
+    });
+  }
+
+  // 5. Senior title + tutorial projects
+  if (features.seniorTitles.length > 0 && features.tutorialApps.length > 0) {
+    const title = features.seniorTitles[0];
+    jokes.push({
+      evidence: `Claims title containing: "${title}". Primary projects include: ${features.tutorialApps[0]}.`,
+      roast: `"${title.charAt(0).toUpperCase() + title.slice(1)}" level experience. Flagship project is a ${features.tutorialApps[0]}. The résumé confidence is writing checks the project section cannot cash.`
+    });
+  }
+
+  // 6. GitHub with no deployed links
+  if (features.hasGitHub && !features.hasLiveLink) {
+    jokes.push({
+      evidence: `GitHub profile linked. Zero deployed live project URLs found.`,
+      roast: `GitHub is where code waits for users it will never meet. A link to your repositories is not a portfolio. It is a waiting room.`
+    });
+  }
+
+  // 7. AI/ML claims with no actual ML tooling
+  if (features.aiClaims.length > 0 && !features.hasMLFrameworks) {
+    jokes.push({
+      evidence: `Claims: "${features.aiClaims[0]}". No PyTorch, TensorFlow, Scikit-learn, model training, or dataset evidence found.`,
+      roast: `Calling an OpenAI API endpoint is not machine learning. The model was trained by someone else. On someone else's GPU. With someone else's data. You are their very enthusiastic customer.`
+    });
+  }
+
+  // 8. Passive ownership language
+  if (features.passiveVerbs.length > 0) {
+    jokes.push({
+      evidence: `Experience bullets contain passive language: "${features.passiveVerbs[0]}" detected.`,
+      roast: `"${features.passiveVerbs[0]}" is how you describe what happened near you, not what you built. Own something. Anything. One bullet.`
+    });
+  }
+
+  // 9. Buzzword overload
+  if (features.buzzwords.length >= 3) {
+    jokes.push({
+      evidence: `Buzzwords found in document: ${features.buzzwords.slice(0, 4).join(', ')}.`,
+      roast: `"${features.buzzwords[0]}" is not a skill. "${features.buzzwords[1]}" is not a job title. A recruiter's vomit reflex is conditioned to fire on exactly these words. You used all ${features.buzzwords.length}.`
+    });
+  }
+
+  // 10. Skills section bloat
+  if (features.skillsCount > 30) {
+    jokes.push({
+      evidence: `Skills section contains approximately ${features.skillsCount}+ individual technology entries.`,
+      roast: `${features.skillsCount} skills listed. No human is genuinely proficient in 30 technologies. Pick ten. Know them cold. Prove all ten in an interview. Then come back.`
+    });
+  }
+
+  // 11. Open source tourist
+  if (features.claimsOpenSource && !features.hasContributions) {
+    jokes.push({
+      evidence: `Claims "open source" involvement. No merged PRs, maintainer credits, or contribution history detected.`,
+      roast: `"Open source enthusiast" who has never merged a single PR. That is called reading. Reading is a hobby. Contributing is a skill.`
+    });
+  }
+
+  // 12. No public code anywhere
+  if (!features.hasGitHub && !features.hasLiveLink) {
+    jokes.push({
+      evidence: `No GitHub profile and no deployed project URLs found anywhere in the document.`,
+      roast: `A software engineer resume with zero public code. That is a very confident strategy. It relies entirely on strangers trusting your word.`
+    });
+  }
+
+  return jokes.slice(0, 5);
+}
+
+// ─── HR Thoughts Generator ────────────────────────────────────────────────
+function generateHRThoughts(score, features, personaId) {
+  let recruiterThought, hmThought, seThought;
+
+  if (score < 30) {
+    recruiterThought = `Reviewed in 6 seconds. Screened out in 7. We're moving on.`;
+  } else if (score < 60) {
+    recruiterThought = `This person clearly builds a lot. Hopefully they also finish things. Sending to the maybe pile.`;
+  } else {
+    recruiterThought = `Solid profile. Active GitHub. Scheduling a first call this week.`;
+  }
+
+  if (features.tutorialApps.length >= 2) {
+    hmThought = `I've seen this exact project list 400 times this quarter. I'd still interview them. Mostly because I'm curious where it leads.`;
+  } else if (score >= 70) {
+    hmThought = `Quantified metrics. Live deployments. This is the resume format I've been requesting since 2019.`;
+  } else {
+    hmThought = `I'd interview them. The listed skills with this level of confidence usually mean one of two things. Let's find out which.`;
+  }
+
+  if (features.metricsMatches.length === 0) {
+    seThought = `Needs one number. Any number. A single percentage point changes everything about this document.`;
+  } else if (features.allFrameworks.length > 8) {
+    seThought = `Too many frameworks, not enough depth on any of them. I'll pick three in the interview. We'll see how far it goes.`;
+  } else {
+    seThought = `Would work with them. The project depth is real enough to have an actual technical conversation.`;
+  }
+
+  return [
+    { role: 'Recruiter', thought: recruiterThought },
+    { role: 'Hiring Manager', thought: hmThought },
+    { role: 'Senior Engineer', thought: seThought }
+  ];
+}
+
+// ─── Strengths Compiler ───────────────────────────────────────────────────
+function compileStrengths(features, analysis) {
+  const s = [];
+  if (analysis.hasGitHub)   s.push('Active GitHub profile — public accountability for code quality.');
+  if (analysis.hasLiveLink) s.push('Deployed project URLs present — evidence of shipping, not just building.');
+  if (analysis.metricsCount > 0) s.push(`${analysis.metricsCount} quantified achievement${analysis.metricsCount > 1 ? 's' : ''} — proves engineering ownership with actual numbers.`);
+  if (features.backendSkills.length > 0 && features.frontendSkills.length > 0)
+    s.push(`Full-stack coverage — frontend (${features.frontendSkills.slice(0, 2).join(', ')}) and backend (${features.backendSkills.slice(0, 2).join(', ')}) both present.`);
+  if (features.tutorialApps.length === 0 && analysis.foundSkills.length > 0)
+    s.push('No tutorial clone projects detected — work appears original.');
+  if (features.buzzwords.length <= 1)
+    s.push('Minimal buzzword contamination — reads as technical, not performative.');
+  if (analysis.wordCount >= 150 && analysis.wordCount <= 700)
+    s.push(`Well-proportioned at ${analysis.wordCount} words — comprehensive without being a novel.`);
+  if (features.passiveVerbs.length === 0 && analysis.foundSkills.length > 0)
+    s.push('Active ownership language throughout — no passive deflection detected.');
+  if (features.certCount >= 1 && analysis.hasLiveLink)
+    s.push('Certifications backed by deployed projects — theory meets practice.');
+  if (s.length === 0) {
+    s.push('Resume is submitted. That surpasses roughly 60% of aspiring developers who never do.');
+    s.push('Formatting is coherent. Document opens without errors. That is genuinely an improvement.');
+  }
+  return s.slice(0, 5);
+}
+
+// ─── Fun Metrics Builder ──────────────────────────────────────────────────
+function buildFunMetrics(score, features, analysis) {
+  const buzzVal      = Math.min(100, analysis.buzzwordCount * 12);
+  const tutVal       = Math.min(100, features.tutorialApps.length * 33);
+  const prodVal      = analysis.productionExposure;
+  const coffeeVal    = Math.max(10, 100 - score);
+  const sleepVal     = analysis.sweatIndex;
+  const commitVal    = analysis.hasGitHub ? Math.min(90, 35 + Math.round((100 - analysis.sweatIndex) * 0.5)) : 12;
+  const interviewRisk= Math.min(100, Math.max(10, 100 - score + analysis.buzzwordCount * 4));
+  const mergeConflict= Math.min(100, features.tutorialApps.length * 22 + (features.frontendSkills.length >= 4 && features.backendSkills.length === 0 ? 28 : 0));
+  const deployConf   = prodVal;
+  const debugEndur   = Math.min(100, Math.max(10, score - 5));
+
+  return [
+    { name: 'Buzzword Density',         value: buzzVal,       explanation: buzzVal > 60      ? 'LinkedIn autocomplete has fully colonised this document.'                                : buzzVal > 25      ? 'Detectable buzzword presence. Resume carries a corporate airborne pathogen.'          : 'Suspiciously clean. Almost human.' },
+    { name: 'Tutorial Dependency',      value: tutVal,        explanation: tutVal > 60       ? 'Career roadmap appears to be a Udemy subscription autoplay queue.'                      : tutVal > 25       ? 'YouTube is a listed dependency in the package.json of this career.'                   : 'No tutorial clones detected. Either impressive or extremely well disguised.' },
+    { name: 'Production Readiness',     value: prodVal,       explanation: prodVal > 70      ? 'Has touched actual production. Rare. Will only panic briefly at the first Sentry alert.': prodVal > 35      ? 'Production-aware in theory. Will freeze when the first real deployment fails.'          : 'Localhost is the production environment. Cloudflare is a distant myth.' },
+    { name: 'Coffee Requirement',       value: coffeeVal,     explanation: coffeeVal > 70    ? 'Will require industrial caffeine before this resume becomes hirable.'                    : coffeeVal > 40    ? 'Standard engineering dependency. Resume adds exactly one extra cup.'                   : 'Surprisingly energising. Still requires coffee. Everyone does.' },
+    { name: 'Sleep Deprivation',        value: sleepVal,      explanation: sleepVal > 70     ? 'This resume was written at 2AM after a framework rabbit hole. It shows.'               : sleepVal > 35     ? 'Moderate sleep debt visible between the lines of the skills section.'                  : 'Remarkably coherent. Either well-rested or an excellent actor.' },
+    { name: 'Commit Consistency',       value: commitVal,     explanation: commitVal > 70    ? 'Green squares present. Whether actual logic lives inside them is a separate question.'  : commitVal > 35    ? 'Intermittent commits. Energy arrives in bursts, typically 24h before a deadline.'      : 'Commit graph is a flatline. Version control is apparently optional.' },
+    { name: 'Interview Risk',           value: interviewRisk, explanation: interviewRisk > 70? 'High probability the interviewer asks about something listed that is not actually known.': interviewRisk > 40? 'Moderate. Fine unless system design comes up in the first 10 minutes.'                 : 'Low. Has something to show that is not a calculator.' },
+    { name: 'Merge Conflict Probability',value: mergeConflict,explanation: mergeConflict > 60? 'Will introduce a conflict attempting a rebase without understanding what rebase does.'   : mergeConflict > 25? 'Moderate. Pushes directly to main during high-confidence moments.'                    : 'Low. Either disciplined or working entirely alone. Same outcome.' },
+    { name: 'Deploy Confidence',        value: deployConf,    explanation: deployConf > 70   ? 'Has actually deployed something. Can be trusted near a CI/CD button.'                  : deployConf > 35   ? 'Will be extremely confident during the first 10 minutes of any deployment.'           : 'Deployment strategy is dragging a folder to Netlify. This is genuinely valid.' },
+    { name: 'Debugging Endurance',      value: debugEndur,    explanation: debugEndur > 70   ? 'Has survived a multi-hour session. Character forged in production flame.'               : debugEndur > 40   ? 'Will debug 45 minutes then ask Stack Overflow. Healthy. Efficient.'                   : 'Googles the entire error message including the file path. We all started here.' }
+  ];
+}
+
+// ─── Structured Roast Output Builder ──────────────────────────────────────
+function buildStructuredRoastOutput({ verdictTitle, incidentReport, evidenceJokes, strengths, hrThoughts, score, funMetrics }) {
+  const survivalLabel = score >= 90 ? 'EXCELLENT — Immune to most career threats.'
+    : score >= 70 ? 'STRONG — Hireable. Minor optimizations advised.'
+    : score >= 50 ? 'NEEDS POLISHING — Several critical hazards detected.'
+    : score >= 20 ? 'ROASTED — Emergency career rebuild required.'
+    : 'IMMEDIATE PRODUCTION OUTAGE — Do not submit to humans.';
+
+  const redFlagsText = evidenceJokes.length > 0
+    ? evidenceJokes.map((j, i) => `[${i + 1}]\nEvidence:\n   "${j.evidence}"\n\nRoast:\n   "${j.roast}"`).join('\n\n──\n\n')
+    : '✔  No critical red flags detected.';
+
+  const strengthsText  = strengths.map(s => `✔  ${s}`).join('\n');
+  const hrText         = hrThoughts.map(h => `${h.role}:\n"${h.thought}"`).join('\n\n');
+  const metricsText    = funMetrics.map(m => `${m.name}: ${m.value}%\n   → ${m.explanation}`).join('\n\n');
+
+  return `## Official Verdict\n"${verdictTitle}"\n\n---\n\n## Incident Report\n\n${incidentReport}\n\n---\n\n## Red Flags\n\n${redFlagsText}\n\n---\n\n## Strengths\n\n${strengthsText}\n\n---\n\n## HR Thoughts\n\n${hrText}\n\n---\n\n## Survival Probability\n\n${score}% — ${survivalLabel}\n\n---\n\n## Fun Metrics\n\n${metricsText}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function buildRoastBody(rand, opening, evidence, profile, verdict) {
   const tA = TRANSITION_A[Math.floor(rand() * TRANSITION_A.length)];
@@ -2586,7 +2904,6 @@ export function analyzeResume(resumeText, personality) {
         education: "degree path",
         missingSection: "testing coverage"
       };
-
       const findings = rawFindings.map(f => interpolate(f, interpolationData)).join(" ");
       
       // 4. Pick Punchline (ensuring no word overlap with findings/title)
@@ -2670,7 +2987,9 @@ export function analyzeResume(resumeText, personality) {
       dynamicRoast.body = formattedBody;
       dynamicRoast.finalBlow = verdict;
     }
+  
   }
+
   const stackOverflowDetected = text.includes('self learner') || text.includes('self-learner') || text.includes('problem solver') || text.includes('problem-solver');
   if (stackOverflowDetected) {
     dynamicRoast.body = `SOURCE ANALYSIS:\n92% Stack Overflow inheritance detected\n\n${dynamicRoast.body}`;
@@ -2704,7 +3023,28 @@ export function analyzeResume(resumeText, personality) {
   if (isProductivityGuru) unlockedAchievements.push({ title: "PRODUCTIVITY GURU", desc: "Completed 50 tutorials, built 0 original production items." });
 
   const battleItems = generateBattleItems(text, rand, sweatInfo);
- 
+
+  // --- Evidence-Based Structured Roast Assembly ---
+  const resumeFeatures = extractResumeFeatures(resumeText);
+  const evidenceJokes  = compileEvidenceBasedJokes(resumeFeatures, resumeText);
+  const hrThoughts     = generateHRThoughts(finalScore, resumeFeatures, personality.id);
+  const strengths      = compileStrengths(resumeFeatures, {
+    hasGitHub, hasLiveLink, metricsCount, wordCount, foundSkills
+  });
+  const funMetrics = buildFunMetrics(finalScore, resumeFeatures, {
+    buzzwordCount, tutorialCount, productionExposure, sweatIndex, hasGitHub
+  });
+
+  dynamicRoast.body = buildStructuredRoastOutput({
+    verdictTitle: dynamicRoast.title,
+    incidentReport: dynamicRoast.body,
+    evidenceJokes,
+    strengths,
+    hrThoughts,
+    score: finalScore,
+    funMetrics
+  });
+
   return {
     score: finalScore,
     seed: textSeed,

@@ -387,18 +387,68 @@ export default function Dashboard({ analysis, resumeText, personality, onReset, 
           "{verdictTitle}"
         </h3>
 
-        {/* Body Paragraph — flowing prose, no format wrappers */}
-        <p style={{ 
-          fontSize: '1.05rem', 
-          lineHeight: 1.9, 
-          color: '#d4d4e0', 
-          marginBottom: '35px',
-          letterSpacing: '0.2px',
-          fontFamily: 'Georgia, "Times New Roman", serif',
-          fontWeight: 400
-        }}>
-          {verdictBody}
-        </p>
+        {/* Body — Structured Roast Sections */}
+        <div style={{ marginBottom: '35px' }}>
+          {verdictBody && verdictBody.includes('## Official Verdict') ? (
+            (() => {
+              const monoSections = ['Incident Report', 'Fun Metrics', 'Survival Probability'];
+              return verdictBody.split('\n\n---\n\n').map((section, idx) => {
+                const trimmed = section.trim();
+                const firstLine = trimmed.split('\n')[0];
+                const isHeader = firstLine.startsWith('## ');
+                const sectionTitle = isHeader ? firstLine.replace('## ', '') : null;
+                const sectionContent = isHeader
+                  ? trimmed.split('\n').slice(1).join('\n').trim()
+                  : trimmed;
+                const useMono = monoSections.some(m => sectionTitle && sectionTitle.includes(m));
+                return (
+                  <div key={idx} style={{ marginBottom: '32px' }}>
+                    {sectionTitle && (
+                      <div style={{
+                        fontSize: '0.58rem',
+                        fontFamily: 'var(--font-mono, monospace)',
+                        color: primaryColor,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '2.5px',
+                        marginBottom: '10px',
+                        paddingBottom: '7px',
+                        borderBottom: `1px solid ${primaryColor}33`
+                      }}>
+                        ▸ {sectionTitle}
+                      </div>
+                    )}
+                    <div style={{
+                      fontSize: useMono ? '0.80rem' : '0.93rem',
+                      lineHeight: useMono ? 1.7 : 1.85,
+                      color: '#d4d4e0',
+                      letterSpacing: '0.1px',
+                      fontFamily: useMono
+                        ? 'var(--font-mono, "Fira Code", monospace)'
+                        : 'Georgia, "Times New Roman", serif',
+                      fontWeight: 400,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word'
+                    }}>
+                      {sectionContent}
+                    </div>
+                  </div>
+                );
+              });
+            })()
+          ) : (
+            <p style={{
+              fontSize: '1.05rem',
+              lineHeight: 1.9,
+              color: '#d4d4e0',
+              letterSpacing: '0.2px',
+              fontFamily: 'Georgia, "Times New Roman", serif',
+              fontWeight: 400
+            }}>
+              {verdictBody}
+            </p>
+          )}
+        </div>
 
         {isPerfectScore && (
           <div style={{
@@ -954,7 +1004,20 @@ export default function Dashboard({ analysis, resumeText, personality, onReset, 
             GENERATE SURVIVOR MEMENTO CARD
           </span>
         </div>
-        <RoastCard score={score} generalRoast={verdictTitle.replace(/"/g, '')} personality={personality} seed={analysis.seed} />
+        <RoastCard 
+          score={score} 
+          generalRoast={verdictBody ? verdictBody.slice(0, 180) + '...' : verdictTitle.replace(/"/g, '')} 
+          verdictTitle={verdictTitle}
+          verdictFinalBlow={verdictFinalBlow}
+          personality={personality} 
+          seed={analysis.seed}
+          candidateName={candidateName}
+          archetype={archetype}
+          sweatIndex={sweatIndex}
+          linkedinDelusion={linkedinDelusion}
+          tutorialDependency={tutorialDependency}
+          productionExposure={productionExposure}
+        />
       </div>
 
       {/* Draggable XP Error Dialogs (Internet Culture, #48) */}
